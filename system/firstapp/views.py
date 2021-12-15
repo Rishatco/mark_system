@@ -73,8 +73,16 @@ class SquadUpdateView(generic.UpdateView):
         name = request.POST.getlist('name')
         surname =request.POST.getlist('surname')
         patronymic = request.POST.getlist("patronymic")
+        squad = SquadModel.objects.get(id=kwargs['pk'])
+        students =StudentModel.objects.filter(squad=squad)
+        students_upd =students.filter(id__in= id)
+        # студенты для удаления
+        del_students = students.difference(students_upd)
+        for student in del_students:
+            student.delete()
         for x in range(len(id)):
-            if(id[x]!=None):
+            # изменение уже сущетсвующих элементов
+            if(id[x]!=''):
                 student = StudentModel.objects.get(id=id[x])
                 student.name = name[x]
                 student.surname = surname[x]
