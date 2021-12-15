@@ -1,0 +1,16 @@
+{% load django_tables2 %}
+{% load static %}
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}"/>
+
+    </head>
+    <body>
+       <div style="text-align: center;">
+            <div class="block">
+                {% render_table table%}
+            </div>
+        </div>
+    </body>
+</html>

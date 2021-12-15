@@ -1,0 +1,38 @@
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="../../../static/scripts/addrow.js"></script>
+    <h1>Squad</h1>
+    <form action="" method="post">{% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Save" />
+
+
+        <button type="button" id="addbtn">Add Student</button>
+        <button type="button">Delete Student</button>
+          <div style="margin-left:20px;margin-top:20px">
+        <h4>Students</h4>
+
+        <table id="student_table">
+            <tbody>
+                <tr>
+                    <th>Surname</th>
+                    <th>Name</th>
+                    <th>Отчество</th>
+                </tr>
+            {% for student in squadmodel.studentmodel_set.all %}
+                <tr>
+                    <td hidden="hidden"><input type="text" value="{{student.pk}}" name="id"/></td>
+                    <td><input type="text" value="{{student.surname}}" name="surname"/></td>
+                    <td><input type="text" value="{{student.name}}" name="name"/></td>
+                    <td><input type="text" value="{{student.patronymic}}" name="patronymic"/></td>
+                    <td><button type="button" class="delbtn">Удалить</button> </td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+  </form>
+
+{% endblock content %}
