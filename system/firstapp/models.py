@@ -34,6 +34,9 @@ class SquadModel(models.Model):
     # направление подготовки
     specialization = models.CharField(max_length=200)
 
+    class Meta:
+        ordering = ['number']
+
     def __str__(self):
         return str(self.number)
 
@@ -41,6 +44,9 @@ class SquadModel(models.Model):
         return  reverse('squad-detail',args=[str(self.id)])
     def get_edit_url(self):
         return  reverse('squad-edit', args=[str(self.id)])
+
+    def get_del_url(self):
+        return  reverse('squad-delete', args=[str(self.id)])
 
 class DepartamentModel(models.Model):
     # полное имя кафедры

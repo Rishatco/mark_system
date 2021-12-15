@@ -20,21 +20,22 @@ from django.views.generic import TemplateView
 
 from firstapp.views import SquadList
 from firstapp.views import create_view, student_detail_view, student_view
-
 from firstapp.views import SquadDetailView
-
 from firstapp.views import SquadUpdateView
-
 from firstapp.views import save_student
+from firstapp.views import SquadCreateView
+
+from firstapp.views import SquadDeleteView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("create/", create_view),
-    path("", student_view),
+    path("", SquadList.as_view(), name='squads'),
     path('<int:id>/', student_detail_view),
     path('squads/', SquadList.as_view(), name='squads'),
     re_path(r'^squad/(?P<pk>\d+)$', SquadDetailView.as_view(), name="squad-detail"),
     re_path(r'^squad-edit/(?P<pk>\d+)$', SquadUpdateView.as_view(), name="squad-edit" ),
-    path('squad-edit/save-student/<int:id>/', save_student)
-
+    path('squad-edit/save-student/<int:id>/', save_student),
+    path('squads/create', SquadCreateView.as_view(), name="squad-create"),
+    re_path(r'^squad-delete/(?P<pk>\d+)$', SquadDeleteView.as_view(), name="squad-delete" )
 ]

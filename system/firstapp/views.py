@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, Http404
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
+from django.urls import reverse_lazy
 from django.views import generic
 from django_tables2 import RequestConfig
 
@@ -68,19 +69,24 @@ class SquadUpdateView(generic.UpdateView):
     fields = ["number", "departament", "specialization"]
 
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
+        # получение значений студентов
         id = request.POST.getlist('id')
         name = request.POST.getlist('name')
         surname =request.POST.getlist('surname')
         patronymic = request.POST.getlist("patronymic")
+        # получение текущего взвода
         squad = SquadModel.objects.get(id=kwargs['pk'])
         # получение id существующих студентов, так как клиент для новых студентов возвращает пустую строку как id
         id_upd = list(filter(lambda x: x!='',id))
         students =StudentModel.objects.filter(squad=squad)
         students_upd =students.filter(id__in= id_upd)
-        # студенты для удаления
-        del_students = students.difference(students_upd)
-        for student in del_students:
+        # id всех студентов
+        students_id = map(lambda x: x.id,students )
+        # id студентов, информацию о которых надо обновить
+        students_upd_id = map(lambda x: x.id, students_upd)
+        del_students = set(students_id).difference(set(students_upd_id))
+        for student_id in del_students:
+            student = StudentModel.objects.get(id=student_id)
             student.delete()
         for x in range(len(id)):
             # изменение уже сущетсвующих элементов
@@ -98,3 +104,18 @@ class SquadUpdateView(generic.UpdateView):
                 student.squad=squad
                 student.save()
         return super().post(request, *args, **kwargs)
+
+class SquadCreateView(generic.CreateView):
+    template_name = "squadmodel_create.html"
+    fields = ["number", "departament", "specialization"]
+    model = SquadModel
+
+class SquadDeleteView(generic.DeleteView):
+    model = SquadModel
+
+    success_url = reverse_lazy('squads')
+    def post(self, request, *args, **kwargs):
+        squad = SquadModel.objects.get(id=kwargs['pk'])
+        students = StudentModel.objects.filter(squad=squad)
+        students.delete()
+        return self.delete(request, *args, **kwargs)
