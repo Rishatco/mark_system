@@ -19,6 +19,7 @@ class StudentModel(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['name', 'surname', 'patronymic'], name='unique fio')
         ]
+        ordering = ["surname", "name", "patronymic"]
 
     def __str__(self):
         return self.surname+' '+self.name+' '+self.patronymic

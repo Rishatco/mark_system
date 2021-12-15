@@ -74,8 +74,10 @@ class SquadUpdateView(generic.UpdateView):
         surname =request.POST.getlist('surname')
         patronymic = request.POST.getlist("patronymic")
         squad = SquadModel.objects.get(id=kwargs['pk'])
+        # получение id существующих студентов, так как клиент для новых студентов возвращает пустую строку как id
+        id_upd = list(filter(lambda x: x!='',id))
         students =StudentModel.objects.filter(squad=squad)
-        students_upd =students.filter(id__in= id)
+        students_upd =students.filter(id__in= id_upd)
         # студенты для удаления
         del_students = students.difference(students_upd)
         for student in del_students:
@@ -87,5 +89,12 @@ class SquadUpdateView(generic.UpdateView):
                 student.name = name[x]
                 student.surname = surname[x]
                 student.patronymic = patronymic[x]
+                student.save()
+            else:
+                student = StudentModel()
+                student.name = name[x]
+                student.surname = surname[x]
+                student.patronymic = patronymic[x]
+                student.squad=squad
                 student.save()
         return super().post(request, *args, **kwargs)
