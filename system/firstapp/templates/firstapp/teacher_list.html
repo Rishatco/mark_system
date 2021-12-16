@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+<title>Teachers</title>
+{% block content %}
+  <h1>Teacher List</h1>
+  {% if teacher_list %}
+  <ul>
+    {% for teacher in teacher_list %}
+      <li>
+        <a href="{{ teacher.get_absolute_url }}">{{ teacher }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no teacher.</p>
+  {% endif %}
+{% endblock %}

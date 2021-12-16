@@ -14,7 +14,10 @@
         </div>
         <div class="nav-right">
           <a href="{% url 'squad-create' %}">+ New Squad</a>
-        </div>
+          <a href="{% url 'squads' %}">Взвода</a>
+          <a href="{% url 'teachers' %}">Преподаватели</a>
+          <a href="{% url 'disciplines' %}">Дисциплины</a>
+         </div>
       </header>
       {% block content %}
       {% endblock content %}

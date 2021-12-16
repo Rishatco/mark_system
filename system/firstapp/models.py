@@ -14,7 +14,7 @@ class StudentModel(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['name', 'surname', 'patronymic'], name='unique fio')
+            models.UniqueConstraint(fields=['name', 'surname', 'patronymic'], name='unique fio student')
         ]
         ordering = ["surname", "name", "patronymic"]
 
@@ -54,3 +54,67 @@ class DepartamentModel(models.Model):
     def __str__(self):
         return self.short_name
 
+    class Meta:
+        ordering =["full_name"]
+
+class Teacher(models.Model):
+    RANKS = [
+        ('Ml', 'младший лейтенант'),
+        ('L', 'лейтенант'),
+        ('Sl', 'старший лейтенант'),
+        ('C', 'капитан'),
+        ('M', 'майор'),
+        ('PP','подполковник'),
+        ('P','полковник')
+    ]
+
+    name = models.CharField(max_length=20, verbose_name="Имя")
+    surname = models.CharField(max_length=30, verbose_name="Фамилия")
+    patronymic = models.CharField(max_length=30, verbose_name="Отчество")
+
+    departament = models.ForeignKey(to="DepartamentModel", on_delete=models.CASCADE, verbose_name="Кафедра")
+    rank = models.CharField(max_length=2, choices=RANKS, verbose_name="Звание")
+
+    def __str__(self):
+        return  self.rank+' '+self.surname
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'surname', 'patronymic'], name='unique fio teacher')
+        ]
+        ordering = ["surname", "name", "patronymic"]
+
+class Discipline(models.Model):
+
+    TYPE_EXAM =[
+        ('Z', 'зачёт'),
+        ('O', 'зачёт с оценкой'),
+        ('E', 'экзамен')
+    ]
+
+    name = models.CharField(max_length=400, verbose_name="Название")
+    short_name = models.CharField(max_length=10, verbose_name="Аббревиатура")
+
+    departament= models.ForeignKey(to="DepartamentModel", on_delete=models.CASCADE, verbose_name="Кафедра")
+
+    teacher = models.ForeignKey(to="Teacher", on_delete=models.CASCADE, verbose_name="Преподаватель")
+
+    course = models.IntegerField(verbose_name="Курс")
+
+    hours = models.IntegerField(verbose_name="Количество часов")
+
+    type_exam = models.CharField(max_length=1, choices=TYPE_EXAM, verbose_name="Тип экзамена")
+
+    class Meta:
+        ordering = ["name"]
+
+class Mark(models.Model):
+
+    student = models.ForeignKey(to="StudentModel", on_delete=models.CASCADE, verbose_name="Студент")
+
+    discipline = models.ForeignKey(to="Discipline", on_delete=models.CASCADE, verbose_name="Дисциплина")
+
+    date = models.DateField(verbose_name="Дата")
+
+    class Meta:
+        ordering =["date", "student"]

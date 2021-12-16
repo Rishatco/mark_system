@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+<title>Discipline</title>
+{% block content %}
+  <h1>Discipline List</h1>
+  {% if discipline_list %}
+  <ul>
+    {% for discipline in discipline_list %}
+      <li>
+        <a href="{{ discipline.get_absolute_url }}">{{ discipline.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are disciplines.</p>
+  {% endif %}
+{% endblock %}

@@ -7,7 +7,7 @@ from django_tables2 import RequestConfig
 
 from .forms import StudentForm
 
-from .models import StudentModel, SquadModel
+from .models import StudentModel, SquadModel, Teacher,Discipline
 
 from .tables import StudentTable
 
@@ -119,3 +119,9 @@ class SquadDeleteView(generic.DeleteView):
         students = StudentModel.objects.filter(squad=squad)
         students.delete()
         return self.delete(request, *args, **kwargs)
+
+class TeachersList(generic.ListView):
+    model = Teacher
+
+class DisciplinesList(generic.ListView):
+    model = Discipline
