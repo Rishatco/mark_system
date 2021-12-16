@@ -1,18 +1,15 @@
-from datetime import datetime
-
+import django
+from django.utils.timezone import timezone
 from django.db import models
-
 
 # Create your models here.
 from django.urls import reverse
-from django.views import generic
-
 
 class StudentModel(models.Model):
     surname = models.CharField(max_length=80,verbose_name="фамилия")
     name = models.CharField(max_length=80, verbose_name='имя')
     patronymic = models.CharField(max_length=80, verbose_name='отчество')
-    birthday = models.DateField(verbose_name='день рождения', default=datetime.now())
+    birthday = models.DateField(verbose_name='день рождения', default= django.utils.timezone.now())
     squad = models.ForeignKey(to="SquadModel", on_delete=models.CASCADE, verbose_name='номер взвода')
 
     class Meta:
