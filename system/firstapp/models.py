@@ -84,6 +84,14 @@ class Teacher(models.Model):
         ]
         ordering = ["surname", "name", "patronymic"]
 
+    def get_absolute_url(self):
+        return  reverse('teacher-detail',args=[str(self.id)])
+    def get_edit_url(self):
+        return  reverse('teacher-edit', args=[str(self.id)])
+
+    def get_del_url(self):
+        return  reverse('teacher-delete', args=[str(self.id)])
+
 class Discipline(models.Model):
 
     TYPE_EXAM =[
@@ -107,6 +115,16 @@ class Discipline(models.Model):
 
     class Meta:
         ordering = ["name"]
+
+    def get_absolute_url(self):
+        return reverse('discipline-detail', args=[str(self.id)])
+
+    def get_edit_url(self):
+        return reverse('discipline-edit', args=[str(self.id)])
+
+    def get_del_url(self):
+        return reverse('discipline-delete', args=[str(self.id)])
+
 
 class Mark(models.Model):
 

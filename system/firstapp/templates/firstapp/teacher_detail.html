@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+      <h1>Teacher</h1>
+    <p><strong>Фамилия: </strong><a>{{teacher.surname}}</a></p>
+    <p><strong>Имя:</strong><a>{{teacher.name}}</a></p>
+    <p><strong>Отчество: </strong><a>{{teacher.patronymic}}</a></p>
+    <p><strong>Звание: </strong><a>{{teacher.get_rank_display}}</a></p>
+    <p><strong>Кафедра: </strong><a>{{teacher.departament}}</a></p>
+<button onclick="location.href='{{teacher.get_edit_url}}'">Edit teacher</button>
+<button onclick="location.href='{{teacher.get_del_url}}'">Delete teacher</button>
+{% endblock %}

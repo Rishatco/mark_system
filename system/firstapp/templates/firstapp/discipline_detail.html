@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+      <h1>Дисциплина</h1>
+    <p><strong>Название: </strong><a>{{discipline.name}}</a></p>
+    <p><strong>Аббревиатура:</strong><a>{{discipline.short_name}}</a></p>
+    <p><strong>Кафедра: </strong><a>{{discipline.departament}}</a></p>
+    <p><strong>Преподаватель: </strong><a>{{discipline.teacher}}</a></p>
+    <p><strong>Курс: </strong><a>{{discipline.course}}</a></p>
+    <p><strong>Часы: </strong><a>{{discipline.hours}}</a></p>
+    <p><strong>Тип экзамена: </strong><a>{{discipline.get_type_exam_display}}</a></p>
+<button onclick="location.href='{{discipline.get_edit_url}}'">Edit discipline</button>
+<button onclick="location.href='{{discipline.get_del_url}}'">Delete discipline</button>
+{% endblock %}

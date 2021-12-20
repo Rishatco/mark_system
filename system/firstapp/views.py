@@ -123,5 +123,40 @@ class SquadDeleteView(generic.DeleteView):
 class TeachersList(generic.ListView):
     model = Teacher
 
+class TeacherCreateView(generic.CreateView):
+    model = Teacher
+    fields = ["surname", "name", "patronymic", "departament", "rank"]
+    template_name = "teacher_create.html"
+
+class TeacherEditView(generic.UpdateView):
+    model = Teacher
+    fields = ["surname", "name", "patronymic", "departament", "rank"]
+    template_name = "teacher_update.html"
+
+class TeacherDeleteView(generic.DeleteView):
+    model = Teacher
+    success_url = reverse_lazy('teachers')
+
+class TeacherDetailView(generic.DetailView):
+    model = Teacher
+
+
 class DisciplinesList(generic.ListView):
     model = Discipline
+
+class DisciplineCreateView(generic.CreateView):
+    model = Discipline
+    fields = ["name", "short_name", "departament", "teacher", "course", "hours", "type_exam"]
+    template_name = "discipline_create.html"
+
+class DisciplineEditView(generic.UpdateView):
+    model = Discipline
+    fields = ["name", "short_name", "departament", "teacher", "course", "hours", "type_exam"]
+    template_name = "discipline_update.html"
+
+class DisciplineDeleteView(generic.DeleteView):
+    model = Discipline
+    success_url = reverse_lazy('discipline')
+
+class DisciplineDetailView(generic.DetailView):
+    model =  Discipline

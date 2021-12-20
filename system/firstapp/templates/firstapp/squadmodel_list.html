@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
-<title>Squads</title>
+{% load static %}
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+<title>Взвода</title>
 {% block content %}
-  <h1>Squad List</h1>
+  <h1>Список взводов</h1>
+  <div class="nav-right">
+    <a href="{% url 'squad-create' %}">Добавить новый взвод</a><br>
+  </div>
   {% if squadmodel_list %}
   <ul>
     {% for squad in squadmodel_list %}

@@ -2,6 +2,9 @@
 <title>Discipline</title>
 {% block content %}
   <h1>Discipline List</h1>
+  <div class="nav-right">
+    <a href="{% url 'disсipline-create' %}">Добавить новую дисциплину</a><br>
+  </div>
   {% if discipline_list %}
   <ul>
     {% for discipline in discipline_list %}
@@ -11,6 +14,6 @@
     {% endfor %}
   </ul>
   {% else %}
-    <p>There are disciplines.</p>
+    <p>There are no disciplines.</p>
   {% endif %}
 {% endblock %}
