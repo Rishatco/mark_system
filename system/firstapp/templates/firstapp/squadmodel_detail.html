@@ -1,29 +1,41 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>Title: {{squadmodel.number}}</h1>
+<h1>Title: {{squadmodel.number}}</h1>
 
-    <p><strong>Departament:</strong><a>{{squadmodel.departament}}</a></p>
-    <p><strong>Specialization:</strong><a>{{squadmodel.specialization}}</a></p>
+<p><strong>Departament:</strong><a>{{squadmodel.departament}}</a></p>
+<p><strong>Specialization:</strong><a>{{squadmodel.specialization}}</a></p>
+<div class="tabs">
+    <input type="radio" name="inset" value="" id="tab_1" checked>
+    <label for="tab_1">Студенты</label>
+    <input type="radio" name="inset" value="" id="tab_2">
+    <label for="tab_2">Дисциплины</label>
 
-    <div style="margin-left:20px;margin-top:20px">
-        <h4>Students</h4>
-        <table>
-            <tbody>
+
+    <div id="students">
+        <div style="margin-left:20px;margin-top:20px">
+            <h4>Студенты</h4>
+            <table>
+                <tbody>
                 <tr>
-                    <th>Surname</th>
-                    <th>Name</th>
+                    <th>Фамилия</th>
+                    <th>Имя</th>
                     <th>Отчество</th>
                 </tr>
-            {% for student in squadmodel.studentmodel_set.all %}
+                {% for student in squadmodel.studentmodel_set.all %}
                 <tr>
                     <td>{{student.surname}}</td>
                     <td>{{student.name}}</td>
                     <td>{{student.patronymic}}</td>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
- <button onclick="location.href='{{squadmodel.get_edit_url}}'">Edit squad</button>
-    <button onclick="location.href='{{squadmodel.get_del_url}}'">Delete squad</button>
+    <div id="disciplines">
+        <h4>Дисциплины</h4>
+    </div>
+</div>
+<button onclick="location.href='{{squadmodel.get_edit_url}}'">Изменить взвод</button>
+<button onclick="location.href='{{squadmodel.get_del_url}}'">Удалить взвод</button>
 {% endblock %}
