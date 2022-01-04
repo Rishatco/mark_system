@@ -7,7 +7,7 @@ from django_tables2 import RequestConfig
 
 from .forms import StudentForm
 
-from .models import StudentModel, SquadModel, Teacher,Discipline
+from .models import StudentModel, SquadModel, Teacher,Discipline, SquadDiscipline
 
 from .tables import StudentTable
 
@@ -71,9 +71,8 @@ class SquadUpdateView(generic.UpdateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(SquadUpdateView, self).get_context_data(**kwargs)
-        discipline = Discipline.objects.all()
-        disiciplines = map(lambda x:x.name, discipline)
-        context['disciplines'] =disiciplines
+        disciplines = Discipline.objects.all()
+        context['disciplines'] =disciplines
         return context
 
 
@@ -112,6 +111,38 @@ class SquadUpdateView(generic.UpdateView):
                 student.patronymic = patronymic[x]
                 student.squad=squad
                 student.save()
+
+        disciplines = request.POST.getlist("discipline")
+        discipline_pk = request.POST.getlist("discipline_pk")[1:]
+        # получение id существующих дисциплин, так как клиент для новых студентов возвращает пустую строку как id
+        id_discp_upd = list(filter(lambda x: x != '', discipline_pk))
+        squadDiscipline = SquadDiscipline.objects.filter(squad=squad)
+        squad_dicp_upd = SquadDiscipline.objects.filter(id__in=id_discp_upd)
+        # id всех дисциплин
+        discipline_id = map(lambda x: x.id, squadDiscipline)
+        # id дисциплин, информацию о которых надо обновить
+        discipline_upd_id = map(lambda x: x.id, squad_dicp_upd)
+        del_discipline = set(discipline_id).difference(set(discipline_upd_id))
+        # удаление
+        for disc_id in del_discipline:
+            discipline = SquadDiscipline.objects.get(id=disc_id)
+            discipline.delete()
+
+        for x in range(len(discipline_pk)):
+            # изменение уже сущетсвующих элементов
+            if (discipline_pk[x] != ''):
+                discipline = SquadDiscipline.objects.get(id=discipline_pk[x])
+                discipline.squad = squad
+                dirDiscp = Discipline.objects.get(name=disciplines[x])
+                discipline.discipline =dirDiscp
+                discipline.save()
+            else:
+                discipline = SquadDiscipline()
+                discipline.squad = squad
+                dirDiscp = Discipline.objects.get(name=disciplines[x])
+                discipline.discipline = dirDiscp
+                discipline.save()
+
         return super().post(request, *args, **kwargs)
 
 class SquadCreateView(generic.CreateView):

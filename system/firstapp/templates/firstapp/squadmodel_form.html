@@ -32,6 +32,7 @@
 #tab_2:checked ~ #disciplines { display: block; }
 
 
+
 </style>
 <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
@@ -79,25 +80,41 @@
                 <tr>
                     <th>Название дисциплины</th>
                 </tr>
-                {% if squadmodel.squaddicipline_set.all %}
-                {% for discipline in squadmodel.squaddicipline_set.all %}
+                <tr hidden="hidden" id="temp_row">
+                    <td hidden="hidden"><input type="text" name="discipline_pk"/></td>
+                    <td>
+                        <select name="discipline">
+                            <option disabled selected>Выберите дисциплину</option>
+                            {% for discipline in disciplines %}
+                            <option>{{discipline.name}}</option>
+                            {% endfor%}
+                        </select>
+                    </td>
+                    <td>
+                        <button class="delbtn" type="button">Удалить</button>
+                    </td>
+                </tr>
+                {% if squadmodel.squaddiscipline_set.all %}
+                {% for discipline in squadmodel.squaddiscipline_set.all %}
                 <tr>
-                    <td>{{discipline.discipline.name}}</td>
+                    <td hidden="hidden" id="discipline_pk"><input type="text" name="discipline_pk" value="{{discipline.pk}}"/></td>
+                    <td>
+                        <select name="discipline">
+                            <option disabled selected>Выберите дисциплину</option>
+                            {% for disc in disciplines %}
+                            {%if disc.name == discipline.discipline.name %}
+                            <option selected>{{disc.name}}</option>
+                            {% else %}
+                            <option >{{disc.name}}</option>
+                            {% endif %}
+                            {% endfor%}
+                        </select>
+                    </td>
+                     <td>
+                        <button class="delbtn" type="button">Удалить</button>
+                    </td>
                 </tr>
                 {% endfor %}
-                {% else %}
-                <tr hidden="hidden" id="temp_row">
-                <td>
-                    <select>
-                        {% for discipline in disciplines %}
-                        <option>{{discipline}}</option>
-                        {% endfor%}
-                    </select>
-                </td>
-                <td>
-                    <button class="delbtn" type="button">Удалить</button>
-                </td>
-                </tr>
                 {% endif %}
                 </tbody>
             </table>

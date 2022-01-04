@@ -100,7 +100,7 @@ class Discipline(models.Model):
         ('E', 'экзамен')
     ]
 
-    name = models.CharField(max_length=400, verbose_name="Название")
+    name = models.CharField(max_length=400, verbose_name="Название", unique=True)
     short_name = models.CharField(max_length=10, verbose_name="Аббревиатура")
 
     departament= models.ForeignKey(to="DepartamentModel", on_delete=models.CASCADE, verbose_name="Кафедра")
