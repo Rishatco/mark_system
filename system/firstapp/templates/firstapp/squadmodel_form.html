@@ -2,36 +2,107 @@
 {% block content %}
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="../../../static/scripts/addrow.js"></script>
-    <h1>Squad</h1>
-    <form action="" method="post">{% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" value="Save" />
+<h1>Squad</h1>
+<style type="text/css">
+.tabs { width: 100%; padding: 0px; margin: 0 auto; }
+.tabs>input { display: none; }
+.tabs>div {
+    display: none;
+    padding: 12px;
+    border: 1px solid #C0C0C0;
+    background: #FFFFFF;
+}
+.tabs>label {
+    display: inline-block;
+    padding: 7px;
+    margin: 0 -5px -1px 0;
+    text-align: center;
+    color: #666666;
+    border: 1px solid #C0C0C0;
+    background: #E0E0E0;
+    cursor: pointer;
+}
+.tabs>input:checked + label {
+    color: #000000;
+    border: 1px solid #C0C0C0;
+    border-bottom: 1px solid #FFFFFF;
+    background: #FFFFFF;
+}
+#tab_1:checked ~ #students,
+#tab_2:checked ~ #disciplines { display: block; }
 
 
-        <button type="button" id="addbtn">Add Student</button>
-          <div style="margin-left:20px;margin-top:20px">
-        <h4>Students</h4>
+</style>
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save"/>
+    <div class="tabs">
+        <input checked id="tab_1" name="inset" type="radio" value="">
+        <label for="tab_1">Студенты</label>
+        <input id="tab_2" name="inset" type="radio" value="">
+        <label for="tab_2">Дисциплины</label>
 
-        <table id="student_table">
-            <tbody>
+
+        <div id="students">
+            <div style="margin-left:20px;margin-top:20px">
+                <h4>Студенты</h4>
+                <button id="addstudent" type="button">Добавить студента</button>
+                <table id="student_table">
+                    <tbody>
+                    <tr>
+                        <th>Фамилия</th>
+                        <th>Имя</th>
+                        <th>Отчество</th>
+                    </tr>
+                    {% for student in squadmodel.studentmodel_set.all %}
+                    <tr>
+                        <td hidden="hidden"><input name="id" type="text" value="{{student.pk}}"/></td>
+                        <td><input name="surname" type="text" value="{{student.surname}}"/></td>
+                        <td><input name="name" type="text" value="{{student.name}}"/></td>
+                        <td><input name="patronymic" type="text" value="{{student.patronymic}}"/></td>
+                        <td>
+                            <button class="delbtn" type="button">Удалить</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <div id="disciplines">
+            <h4>Дисциплины</h4>
+            <button id="adddiscipline" type="button">Добавить дисциплину</button>
+            <table id="discipline_table">
+                <tbody>
                 <tr>
-                    <th>Surname</th>
-                    <th>Name</th>
-                    <th>Отчество</th>
+                    <th>Название дисциплины</th>
                 </tr>
-            {% for student in squadmodel.studentmodel_set.all %}
+                {% if squadmodel.squaddicipline_set.all %}
+                {% for discipline in squadmodel.squaddicipline_set.all %}
                 <tr>
-                    <td hidden="hidden"><input type="text" value="{{student.pk}}" name="id"/></td>
-                    <td><input type="text" value="{{student.surname}}" name="surname"/></td>
-                    <td><input type="text" value="{{student.name}}" name="name"/></td>
-                    <td><input type="text" value="{{student.patronymic}}" name="patronymic"/></td>
-                    <td><button type="button" class="delbtn">Удалить</button> </td>
+                    <td>{{discipline.discipline.name}}</td>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
+                {% endfor %}
+                {% else %}
+                <tr hidden="hidden" id="temp_row">
+                <td>
+                    <select>
+                        {% for discipline in disciplines %}
+                        <option>{{discipline}}</option>
+                        {% endfor%}
+                    </select>
+                </td>
+                <td>
+                    <button class="delbtn" type="button">Удалить</button>
+                </td>
+                </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
     </div>
-  </form>
+</form>
 
 {% endblock content %}

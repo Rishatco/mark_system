@@ -68,6 +68,15 @@ class SquadUpdateView(generic.UpdateView):
     model = SquadModel
     fields = ["number", "departament", "specialization"]
 
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(SquadUpdateView, self).get_context_data(**kwargs)
+        discipline = Discipline.objects.all()
+        disiciplines = map(lambda x:x.name, discipline)
+        context['disciplines'] =disiciplines
+        return context
+
+
     def post(self, request, *args, **kwargs):
         # получение значений студентов
         id = request.POST.getlist('id')

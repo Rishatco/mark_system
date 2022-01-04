@@ -130,9 +130,15 @@ class Mark(models.Model):
 
     student = models.ForeignKey(to="StudentModel", on_delete=models.CASCADE, verbose_name="Студент")
 
-    discipline = models.ForeignKey(to="Discipline", on_delete=models.CASCADE, verbose_name="Дисциплина")
+    discipline = models.ForeignKey(to="SquadDiscipline", on_delete=models.CASCADE, verbose_name="Дисциплина")
 
     date = models.DateField(verbose_name="Дата")
 
     class Meta:
         ordering =["date", "student"]
+
+class SquadDiscipline(models.Model):
+
+    squad = models.ForeignKey(to="SquadModel", on_delete=models.CASCADE, verbose_name="Взвод")
+
+    discipline = models.ForeignKey(to="Discipline", on_delete=models.CASCADE, verbose_name="Дисциплина")

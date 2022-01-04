@@ -4,6 +4,34 @@
 
 <p><strong>Departament:</strong><a>{{squadmodel.departament}}</a></p>
 <p><strong>Specialization:</strong><a>{{squadmodel.specialization}}</a></p>
+ <style type="text/css">
+.tabs { width: 100%; padding: 0px; margin: 0 auto; }
+.tabs>input { display: none; }
+.tabs>div {
+    display: none;
+    padding: 12px;
+    border: 1px solid #C0C0C0;
+    background: #FFFFFF;
+}
+.tabs>label {
+    display: inline-block;
+    padding: 7px;
+    margin: 0 -5px -1px 0;
+    text-align: center;
+    color: #666666;
+    border: 1px solid #C0C0C0;
+    background: #E0E0E0;
+    cursor: pointer;
+}
+.tabs>input:checked + label {
+    color: #000000;
+    border: 1px solid #C0C0C0;
+    border-bottom: 1px solid #FFFFFF;
+    background: #FFFFFF;
+}
+#tab_1:checked ~ #students,
+#tab_2:checked ~ #disciplines { display: block; }
+</style>
 <div class="tabs">
     <input type="radio" name="inset" value="" id="tab_1" checked>
     <label for="tab_1">Студенты</label>
@@ -32,8 +60,24 @@
             </table>
         </div>
     </div>
+
     <div id="disciplines">
-        <h4>Дисциплины</h4>
+        <div style="margin-left:20px;margin-top:20px">
+            <h4>Дисциплины</h4>
+            <table>
+                <tbody>
+                <tr>
+                    <th>Название дисциплины</th>
+
+                </tr>
+                {% for discipline in squadmodel.squaddicipline_set.all %}
+                <tr>
+                    <td>{{discipline.discipline.name}}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 <button onclick="location.href='{{squadmodel.get_edit_url}}'">Изменить взвод</button>
