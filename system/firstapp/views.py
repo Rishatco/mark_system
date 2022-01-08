@@ -3,13 +3,37 @@ from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.urls import reverse_lazy
 from django.views import generic
-from django_tables2 import RequestConfig
+
 
 from .forms import StudentForm
 
-from .models import StudentModel, SquadModel, Teacher,Discipline, SquadDiscipline
+from .models import StudentModel, SquadModel, Teacher, Discipline, SquadDiscipline, Mark
 
-from .tables import StudentTable
+
+
+def raiting_log(request, pk):
+    curDis = request.GET.get("choose_discipline")
+    if curDis == None:
+        squad = SquadModel.objects.get(id=pk)
+        context = {"squad": squad}
+        return render(request, "firstapp/raiting_log.html", context)
+    else:
+        discipline = Discipline.objects.get(name=curDis)
+        squad = SquadModel.objects.get(id=pk)
+        squadDiscipline = SquadDiscipline.objects.get(discipline=discipline, squad=squad)
+        students = StudentModel.objects.filter(squad=squad)
+        curMarks = Mark.objects.filter(discipline=squadDiscipline)
+        studentsMark =curMarks.filter(student__in=students)
+        dates = studentsMark.values('date').distinct()
+        marks = []
+        for student in students:
+            marks.append({"student": student, "marks":[]})
+        for i in marks:
+            for mark in studentsMark:
+                i["marks"].append(mark.ball)
+        context = {"squad": squad, "students": students, "marks": curMarks, "dates": dates, "stmarks": marks}
+
+        return render(request, "firstapp/raiting_log.html", context)
 
 
 def create_view(request):
@@ -36,12 +60,6 @@ def save_student(request, id):
         raise Http404('Такого студента не существует')
 
 
-def student_view(request):
-    dataset = StudentModel.objects.all()
-
-    table =StudentTable(dataset)
-    RequestConfig(request).configure(table)
-    return render(request, 'listview.html', {"table" : table})
 
 def student_detail_view(request, id):
     try:

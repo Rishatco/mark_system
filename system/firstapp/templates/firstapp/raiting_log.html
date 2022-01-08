@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form id="choose_dis" name="discipline">
+<select id="discipline" name="choose_discipline">
+    {% for discipline in squad.squaddiscipline_set.all %}
+    <option>{{discipline.discipline.name}}</option>
+    {% endfor %}
+</select>
+    <button type="submit">Выбрать дисциплину</button>
+</form>
+{% if students %}
+<table>
+    <tr><th>Студенты</th>
+        {% for date in dates%}
+        <th><input type="date" value="{{date}}"/></th>
+        {% endfor %}
+    </tr>
+    {% for student in stmarks %}
+    <tr>
+        <td>{{student.student}}</td>
+    {% for j in student.marks %}
+    <td><input value="{{j}}" type="number" /></td>
+    {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+{% endblock %}

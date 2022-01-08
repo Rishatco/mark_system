@@ -13,13 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+
 from django.contrib import admin
 from django.urls import path, re_path
 from django.views.generic import TemplateView
 
-from firstapp.views import SquadList
-from firstapp.views import create_view, student_detail_view, student_view
+from firstapp.views import SquadList, raiting_log
+from firstapp.views import create_view, student_detail_view
 from firstapp.views import SquadDetailView
 from firstapp.views import SquadUpdateView
 from firstapp.views import save_student,DisciplineDetailView
@@ -45,4 +45,5 @@ urlpatterns = [
     re_path(r'^discipline-edit/(?P<pk>\d+)$', DisciplineEditView.as_view(), name="discipline-edit"),
     re_path(r'^discipline-detele/(?P<pk>\d+)$', DisciplineDeleteView.as_view(), name="discipline-delete"),
     re_path(r'^discipline/(?P<pk>\d+)$', DisciplineDetailView.as_view(), name="discipline-detail"),
+    path('squad/raiting/<int:pk>/', raiting_log, name='raiting')
 ]

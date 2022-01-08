@@ -45,6 +45,9 @@ class SquadModel(models.Model):
     def get_del_url(self):
         return  reverse('squad-delete', args=[str(self.id)])
 
+    def get_raiting_url(self):
+        return reverse('raiting', args=[str(self.id)])
+
 class DepartamentModel(models.Model):
     # полное имя кафедры
     full_name = models.CharField(max_length=300, unique=True)
@@ -126,6 +129,7 @@ class Discipline(models.Model):
         return reverse('discipline-delete', args=[str(self.id)])
 
 
+
 class Mark(models.Model):
 
     student = models.ForeignKey(to="StudentModel", on_delete=models.CASCADE, verbose_name="Студент")
@@ -133,6 +137,8 @@ class Mark(models.Model):
     discipline = models.ForeignKey(to="SquadDiscipline", on_delete=models.CASCADE, verbose_name="Дисциплина")
 
     date = models.DateField(verbose_name="Дата")
+
+    ball = models.IntegerField()
 
     class Meta:
         ordering =["date", "student"]
