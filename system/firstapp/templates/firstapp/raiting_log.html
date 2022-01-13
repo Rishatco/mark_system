@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="../../../static/scripts/addrow.js"></script>
 <form id="choose_dis" name="discipline">
 <select id="discipline" name="choose_discipline">
     {% for discipline in squad.squaddiscipline_set.all %}
@@ -9,22 +11,29 @@
 </select>
     <button type="submit">Выбрать дисциплину</button>
 </form>
+
 {% if students %}
-<table>
-    <tr><th>Студенты</th>
+<button id="addlesson" type="button">Добавить занятие</button>
+<form action="" method="post">
+{% csrf_token %}
+<table id="marks"  name="marks">
+    <tr id="hd"><th id="students">Студенты</th>
         {% for date in dates%}
-        <th><input type="date" value="{{date}}"/></th>
+        <th><input type="date" value="{{date}}" name="data"/></th>
         {% endfor %}
     </tr>
     {% for student in stmarks %}
     <tr>
-        <td>{{student.student}}</td>
+        <td name="student">{{student.student}}</td>
     {% for j in student.marks %}
-    <td><input value="{{j}}" type="number" /></td>
+    <td><input value="{{j}}" type="number" name="ocenka" /></td>
     {% endfor %}
     </tr>
     {% endfor %}
 </table>
+ <input type="submit" value="Save"/>
+</form>
+
 {% endif %}
 
 {% endblock %}

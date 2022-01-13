@@ -12,28 +12,66 @@ from .models import StudentModel, SquadModel, Teacher, Discipline, SquadDiscipli
 
 
 def raiting_log(request, pk):
-    curDis = request.GET.get("choose_discipline")
-    if curDis == None:
-        squad = SquadModel.objects.get(id=pk)
-        context = {"squad": squad}
-        return render(request, "firstapp/raiting_log.html", context)
-    else:
-        discipline = Discipline.objects.get(name=curDis)
-        squad = SquadModel.objects.get(id=pk)
-        squadDiscipline = SquadDiscipline.objects.get(discipline=discipline, squad=squad)
-        students = StudentModel.objects.filter(squad=squad)
-        curMarks = Mark.objects.filter(discipline=squadDiscipline)
-        studentsMark =curMarks.filter(student__in=students)
-        dates = studentsMark.values('date').distinct()
-        marks = []
-        for student in students:
-            marks.append({"student": student, "marks":[]})
-        for i in marks:
-            for mark in studentsMark:
-                i["marks"].append(mark.ball)
-        context = {"squad": squad, "students": students, "marks": curMarks, "dates": dates, "stmarks": marks}
+    if request.method == "GET":
+        curDis = request.GET.get("choose_discipline")
+        if curDis == None:
+            squad = SquadModel.objects.get(id=pk)
+            context = {"squad": squad}
+            return render(request, "firstapp/raiting_log.html", context)
+        else:
+            discipline = Discipline.objects.get(name=curDis)
+            squad = SquadModel.objects.get(id=pk)
+            squadDiscipline = SquadDiscipline.objects.get(discipline=discipline, squad=squad)
+            students = StudentModel.objects.filter(squad=squad)
+            curMarks = Mark.objects.filter(discipline=squadDiscipline)
+            studentsMark =curMarks.filter(student__in=students)
+            dates =set(curMarks.values_list('date',flat=True))
+            strDate =sorted( list(map(lambda x: x.strftime("%Y-%m-%d"), dates)))
+            marks = []
+            for student in students:
+                marks.append({"student": student, "marks":[]})
+                for date in strDate:
+                    if Mark.objects.filter(student=student, date=date,discipline=squadDiscipline).exists():
+                        curMark = Mark.objects.get(student=student, date=str(date), discipline=squadDiscipline)
+                        marks[-1]["marks"].append(curMark.ball)
+                    else:
+                        marks[-1]["marks"].append(0)
+            context = {"squad": squad, "students": students, "marks": curMarks, "dates": strDate, "stmarks": marks}
 
-        return render(request, "firstapp/raiting_log.html", context)
+            return render(request, "firstapp/raiting_log.html", context)
+    else:
+        curDis = request.GET.get("choose_discipline")
+        dates = request.POST.getlist("data")
+        ocenkas = request.POST.getlist('ocenka')
+        squad = SquadModel.objects.get(id=pk)
+        discipline = Discipline.objects.get(name=curDis)
+        squadDiscipline = SquadDiscipline.objects.get(discipline=discipline, squad=squad)
+        students =list(StudentModel.objects.filter(squad=squad))
+        curMarks = Mark.objects.filter(discipline=squadDiscipline)
+        studentsMark = curMarks.filter(student__in=students)
+        studentsMark.delete()
+        i =1
+        j=0
+        curStudent= students[j]
+        for ocenka in ocenkas:
+            if ocenka == '' or dates[i-1] == '':
+                continue;
+            mark = Mark()
+            mark.student = curStudent
+            mark.ball = ocenka
+            mark.date =dates[i-1]
+            mark.discipline = squadDiscipline
+            mark.save()
+            if i == len(dates):
+                j +=1
+                if(j==len(students)):
+                    break
+                curStudent= students[j]
+                i=1
+            else:
+                i += 1
+
+        return redirect(squad)
 
 
 def create_view(request):
