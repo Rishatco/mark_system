@@ -5,11 +5,12 @@ from django.db import models
 # Create your models here.
 from django.urls import reverse
 
+
 class StudentModel(models.Model):
-    surname = models.CharField(max_length=80,verbose_name="фамилия")
+    surname = models.CharField(max_length=80, verbose_name="фамилия")
     name = models.CharField(max_length=80, verbose_name='имя')
     patronymic = models.CharField(max_length=80, verbose_name='отчество')
-    birthday = models.DateField(verbose_name='день рождения', default= django.utils.timezone.now())
+    birthday = models.DateField(verbose_name='день рождения', default=django.utils.timezone.now())
     squad = models.ForeignKey(to="SquadModel", on_delete=models.CASCADE, verbose_name='номер взвода')
 
     class Meta:
@@ -19,7 +20,7 @@ class StudentModel(models.Model):
         ordering = ["surname", "name", "patronymic"]
 
     def __str__(self):
-        return self.surname+' '+self.name+' '+self.patronymic
+        return self.surname + ' ' + self.name + ' ' + self.patronymic
 
 
 # класс взвода
@@ -38,27 +39,33 @@ class SquadModel(models.Model):
         return str(self.number)
 
     def get_absolute_url(self):
-        return  reverse('squad-detail',args=[str(self.id)])
+        return reverse('squad-detail', args=[str(self.id)])
+
     def get_edit_url(self):
-        return  reverse('squad-edit', args=[str(self.id)])
+        return reverse('squad-edit', args=[str(self.id)])
 
     def get_del_url(self):
-        return  reverse('squad-delete', args=[str(self.id)])
+        return reverse('squad-delete', args=[str(self.id)])
 
     def get_raiting_url(self):
         return reverse('raiting', args=[str(self.id)])
 
+    def get_total_url(self):
+        return reverse('squad-raiting', args=[str(self.id)])
+
+
 class DepartamentModel(models.Model):
     # полное имя кафедры
     full_name = models.CharField(max_length=300, unique=True)
-    # аббревиатура кафкдры
+    # аббревиатура кафедры
     short_name = models.CharField(max_length=10)
 
     def __str__(self):
         return self.short_name
 
     class Meta:
-        ordering =["full_name"]
+        ordering = ["full_name"]
+
 
 class Teacher(models.Model):
     RANKS = [
@@ -67,8 +74,8 @@ class Teacher(models.Model):
         ('Sl', 'старший лейтенант'),
         ('C', 'капитан'),
         ('M', 'майор'),
-        ('PP','подполковник'),
-        ('P','полковник')
+        ('PP', 'подполковник'),
+        ('P', 'полковник')
     ]
 
     name = models.CharField(max_length=20, verbose_name="Имя")
@@ -79,7 +86,7 @@ class Teacher(models.Model):
     rank = models.CharField(max_length=2, choices=RANKS, verbose_name="Звание")
 
     def __str__(self):
-        return  self.rank+' '+self.surname
+        return self.rank + ' ' + self.surname
 
     class Meta:
         constraints = [
@@ -88,16 +95,17 @@ class Teacher(models.Model):
         ordering = ["surname", "name", "patronymic"]
 
     def get_absolute_url(self):
-        return  reverse('teacher-detail',args=[str(self.id)])
+        return reverse('teacher-detail', args=[str(self.id)])
+
     def get_edit_url(self):
-        return  reverse('teacher-edit', args=[str(self.id)])
+        return reverse('teacher-edit', args=[str(self.id)])
 
     def get_del_url(self):
-        return  reverse('teacher-delete', args=[str(self.id)])
+        return reverse('teacher-delete', args=[str(self.id)])
+
 
 class Discipline(models.Model):
-
-    TYPE_EXAM =[
+    TYPE_EXAM = [
         ('Z', 'зачёт'),
         ('O', 'зачёт с оценкой'),
         ('E', 'экзамен')
@@ -106,7 +114,7 @@ class Discipline(models.Model):
     name = models.CharField(max_length=400, verbose_name="Название", unique=True)
     short_name = models.CharField(max_length=10, verbose_name="Аббревиатура")
 
-    departament= models.ForeignKey(to="DepartamentModel", on_delete=models.CASCADE, verbose_name="Кафедра")
+    departament = models.ForeignKey(to="DepartamentModel", on_delete=models.CASCADE, verbose_name="Кафедра")
 
     teacher = models.ForeignKey(to="Teacher", on_delete=models.CASCADE, verbose_name="Преподаватель")
 
@@ -129,9 +137,7 @@ class Discipline(models.Model):
         return reverse('discipline-delete', args=[str(self.id)])
 
 
-
 class Mark(models.Model):
-
     student = models.ForeignKey(to="StudentModel", on_delete=models.CASCADE, verbose_name="Студент")
 
     discipline = models.ForeignKey(to="SquadDiscipline", on_delete=models.CASCADE, verbose_name="Дисциплина")
@@ -141,10 +147,10 @@ class Mark(models.Model):
     ball = models.IntegerField()
 
     class Meta:
-        ordering =["date", "student"]
+        ordering = ["date", "student"]
+
 
 class SquadDiscipline(models.Model):
-
     squad = models.ForeignKey(to="SquadModel", on_delete=models.CASCADE, verbose_name="Взвод")
 
     discipline = models.ForeignKey(to="Discipline", on_delete=models.CASCADE, verbose_name="Дисциплина")

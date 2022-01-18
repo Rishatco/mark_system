@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.views.generic import TemplateView
 
-from firstapp.views import SquadList, raiting_log
+from firstapp.views import SquadList, raiting_log,squad_raiting
 from firstapp.views import create_view, student_detail_view
 from firstapp.views import SquadDetailView
 from firstapp.views import SquadUpdateView
@@ -45,5 +45,7 @@ urlpatterns = [
     re_path(r'^discipline-edit/(?P<pk>\d+)$', DisciplineEditView.as_view(), name="discipline-edit"),
     re_path(r'^discipline-detele/(?P<pk>\d+)$', DisciplineDeleteView.as_view(), name="discipline-delete"),
     re_path(r'^discipline/(?P<pk>\d+)$', DisciplineDetailView.as_view(), name="discipline-detail"),
-    path('squad/raiting/<int:pk>/', raiting_log, name='raiting')
+    path('squad/raiting/<int:pk>/', raiting_log, name='raiting'),
+    path('squad/squadraiting/<int:pk>/', squad_raiting, name='squad-raiting')
+
 ]

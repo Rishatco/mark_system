@@ -10,6 +10,30 @@ from .forms import StudentForm
 from .models import StudentModel, SquadModel, Teacher, Discipline, SquadDiscipline, Mark
 
 
+def squad_raiting(request, pk):
+    if request.method == "GET":
+        squad = SquadModel.objects.get(id=pk)
+        students = StudentModel.objects.filter(squad=squad)
+        squad_disciplines = SquadDiscipline.objects.filter(squad=squad)
+        raiting_list = []
+        for student in students:
+            cnt_ball = 0
+            cur_ball = 0
+            for discipline in squad_disciplines:
+                cur_marks = Mark.objects.filter(student=student, discipline=discipline)
+                for mark in cur_marks:
+                    if mark.ball != -1:
+                        cnt_ball += 1
+                        cur_ball += mark.ball
+            cur_student = [student, cur_ball/cnt_ball]
+            raiting_list.append(cur_student)
+        raiting_list.sort(key=lambda x: x[1])
+        raiting_list.reverse()
+        raiting_list = map(lambda x: x[0], raiting_list)
+        context = {"students": raiting_list, "squadmodel": squad}
+        return  render(request, "firstapp/squad_raiting.html",context)
+
+
 
 def raiting_log(request, pk):
     if request.method == "GET":
@@ -55,10 +79,13 @@ def raiting_log(request, pk):
         curStudent= students[j]
         for ocenka in ocenkas:
             if ocenka == '' or dates[i-1] == '':
-                continue;
+                continue
             mark = Mark()
             mark.student = curStudent
-            mark.ball = ocenka
+            if ocenka == 'н':
+                mark.ball = -1
+            else:
+                mark.ball = ocenka
             mark.date =dates[i-1]
             mark.discipline = squadDiscipline
             mark.save()
