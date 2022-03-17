@@ -57,7 +57,10 @@ def raiting_log(request, pk):
                 for date in strDate:
                     if Mark.objects.filter(student=student, date=date,discipline=squadDiscipline).exists():
                         curMark = Mark.objects.get(student=student, date=str(date), discipline=squadDiscipline)
-                        marks[-1]["marks"].append(curMark.ball)
+                        if curMark.ball == -1:
+                            marks[-1]["marks"].append('н')
+                        else:
+                            marks[-1]["marks"].append(curMark.ball)
                     else:
                         marks[-1]["marks"].append(0)
             context = {"squad": squad, "students": students, "marks": curMarks, "dates": strDate, "stmarks": marks}
