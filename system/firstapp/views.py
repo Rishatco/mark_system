@@ -10,7 +10,76 @@ from .forms import StudentForm
 from .models import StudentModel, SquadModel, Teacher, Discipline, SquadDiscipline, Mark
 
 
-def squad_raiting(request, pk):
+def squad_study_raiting(request, pk):
+    if request.method == "GET":
+        squad = SquadModel.objects.get(id=pk)
+        students = StudentModel.objects.filter(squad=squad)
+        squad_disciplines = SquadDiscipline.objects.filter(squad=squad)
+        raiting_list = []
+        for student in students:
+            cnt_ball = 0
+            cur_ball = 0
+            for discipline in squad_disciplines:
+                cur_marks = Mark.objects.filter(student=student, discipline=discipline)
+                for mark in cur_marks:
+                    if mark.ball != -1:
+                        cnt_ball += 1
+                        cur_ball += mark.ball
+            cur_student = [student, cur_ball/cnt_ball]
+            raiting_list.append(cur_student)
+        raiting_list.sort(key=lambda x: x[1])
+        raiting_list.reverse()
+        raiting_list = map(lambda x: x[0], raiting_list)
+        context = {"students": raiting_list, "squadmodel": squad}
+        return  render(request, "firstapp/squad_raiting.html",context)
+
+def squad_visiting_raiting(request, pk):
+    if request.method == "GET":
+        squad = SquadModel.objects.get(id=pk)
+        students = StudentModel.objects.filter(squad=squad)
+        squad_disciplines = SquadDiscipline.objects.filter(squad=squad)
+        raiting_list = []
+        for student in students:
+            cnt_ball = 0
+            cur_ball = 0
+            for discipline in squad_disciplines:
+                cur_marks = Mark.objects.filter(student=student, discipline=discipline)
+                for mark in cur_marks:
+                    if mark.ball != -1:
+                        cnt_ball += 1
+                        cur_ball += mark.ball
+            cur_student = [student, cur_ball/cnt_ball]
+            raiting_list.append(cur_student)
+        raiting_list.sort(key=lambda x: x[1])
+        raiting_list.reverse()
+        raiting_list = map(lambda x: x[0], raiting_list)
+        context = {"students": raiting_list, "squadmodel": squad}
+        return  render(request, "firstapp/squad_raiting.html",context)
+
+def squad_addres_raiting(request, pk):
+    if request.method == "GET":
+        squad = SquadModel.objects.get(id=pk)
+        students = StudentModel.objects.filter(squad=squad)
+        squad_disciplines = SquadDiscipline.objects.filter(squad=squad)
+        raiting_list = []
+        for student in students:
+            cnt_ball = 0
+            cur_ball = 0
+            for discipline in squad_disciplines:
+                cur_marks = Mark.objects.filter(student=student, discipline=discipline)
+                for mark in cur_marks:
+                    if mark.ball != -1:
+                        cnt_ball += 1
+                        cur_ball += mark.ball
+            cur_student = [student, cur_ball/cnt_ball]
+            raiting_list.append(cur_student)
+        raiting_list.sort(key=lambda x: x[1])
+        raiting_list.reverse()
+        raiting_list = map(lambda x: x[0], raiting_list)
+        context = {"students": raiting_list, "squadmodel": squad}
+        return  render(request, "firstapp/squad_raiting.html",context)
+
+def squad_total_raiting(request, pk):
     if request.method == "GET":
         squad = SquadModel.objects.get(id=pk)
         students = StudentModel.objects.filter(squad=squad)
@@ -35,7 +104,7 @@ def squad_raiting(request, pk):
 
 
 
-def raiting_log(request, pk):
+def rating_log(request, pk):
     if request.method == "GET":
         curDis = request.GET.get("choose_discipline")
         if curDis == None:
