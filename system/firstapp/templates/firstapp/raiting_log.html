@@ -3,6 +3,17 @@
 {% block content %}
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="../../../static/scripts/addrow.js"></script>
+<style type="text/css">
+    table {
+        border-collapse: collapse;
+    }
+
+    table th,
+    table td {
+        border: 1px solid #000;
+    }
+</style>
+
 <form id="choose_dis" name="discipline">
 <select id="discipline" name="choose_discipline">
     {% for discipline in squad.squaddiscipline_set.all %}
