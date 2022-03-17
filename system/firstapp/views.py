@@ -104,16 +104,6 @@ def raiting_log(request, pk):
         return redirect(squad)
 
 
-def create_view(request):
-    if request.method =="POST":
-        form = StudentForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return  redirect("/")
-    else:
-        form = StudentForm()
-        context = {"form": form}
-        return  render(request, "create.html", context)
 
 def save_student(request, id):
     try:
@@ -129,12 +119,7 @@ def save_student(request, id):
 
 
 
-def student_detail_view(request, id):
-    try:
-        data = StudentModel.objects.get(id=id)
-    except StudentModel.DoesNotExist:
-        raise  Http404('Такого студента не существует')
-    return render (request, 'detailview.html', {'data': data})
+
 
 def squad_update_view(request, id):
     if request.method=="GET":
