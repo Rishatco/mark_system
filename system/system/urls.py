@@ -19,7 +19,6 @@ from django.urls import path, re_path
 from django.views.generic import TemplateView
 
 from firstapp.views import SquadList, raiting_log,squad_raiting
-from firstapp.views import create_view, student_detail_view
 from firstapp.views import SquadDetailView
 from firstapp.views import SquadUpdateView
 from firstapp.views import save_student,DisciplineDetailView

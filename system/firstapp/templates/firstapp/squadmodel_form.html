@@ -2,7 +2,7 @@
 {% block content %}
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="../../../static/scripts/addrow.js"></script>
-<h1>Squad</h1>
+<h1>Взвод</h1>
 <style type="text/css">
 .tabs { width: 100%; padding: 0px; margin: 0 auto; }
 .tabs>input { display: none; }
@@ -28,6 +28,14 @@
     border-bottom: 1px solid #FFFFFF;
     background: #FFFFFF;
 }
+    table {
+        border-collapse: collapse;
+    }
+    table th,
+    table td {
+        border: 1px solid #000;
+    }
+
 #tab_1:checked ~ #students,
 #tab_2:checked ~ #disciplines { display: block; }
 
@@ -36,7 +44,7 @@
 </style>
 <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Save"/>
+    <input type="submit" value="Сохранить"/>
     <div class="tabs">
         <input checked id="tab_1" name="inset" type="radio" value="">
         <label for="tab_1">Студенты</label>
