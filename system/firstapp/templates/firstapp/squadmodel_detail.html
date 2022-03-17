@@ -5,8 +5,12 @@
 <p><strong>Кафедра:</strong><a>{{squadmodel.departament}}</a></p>
 <p><strong>Специальность:</strong><a>{{squadmodel.specialization}}</a></p>
 
-<button onclick="location.href='{{squadmodel.get_raiting_url}}'">Журнал оценок</button>
-<button onclick="location.href='{{squadmodel.get_total_url}}'">Рейтинг студентов</button>
+<button onclick="location.href='{{squadmodel.get_rating_url}}'">Журнал оценок</button> <br>
+<button onclick="location.href='{{squadmodel.get_study_rating_url}}'">Рейтинг студентов по успеваемости</button> <br>
+<button onclick="location.href='{{squadmodel.get_visiting_rating_url}}'">Рейтинг студентов по посещяемости</button> <br>
+<button onclick="location.href='{{squadmodel.get_add_res_rating_url}}'">Рейтинг студентов по исполнению дополнительных обязанностей</button> <br>
+<button onclick="location.href='{{squadmodel.get_total_rating}}'">Общий рейтинг студентов</button> <br>
+
  <style type="text/css">
 .tabs { width: 100%; padding: 0px; margin: 0 auto; }
 .tabs>input { display: none; }

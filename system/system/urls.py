@@ -44,7 +44,11 @@ urlpatterns = [
     re_path(r'^discipline-edit/(?P<pk>\d+)$', DisciplineEditView.as_view(), name="discipline-edit"),
     re_path(r'^discipline-detele/(?P<pk>\d+)$', DisciplineDeleteView.as_view(), name="discipline-delete"),
     re_path(r'^discipline/(?P<pk>\d+)$', DisciplineDetailView.as_view(), name="discipline-detail"),
-    path('squad/raiting/<int:pk>/', raiting_log, name='raiting'),
-    path('squad/squadraiting/<int:pk>/', squad_raiting, name='squad-raiting')
+    path('squad/rating/<int:pk>/', raiting_log, name='rating'),
+    path('squad/squad-visiting-rating/<int:pk>/', squad_raiting, name='squad-study-rating'),
+    path('squad/squad-study-rating/<int:pk>/', squad_raiting, name='squad-visiting-rating'),
+    path('squad/squad-addres-rating/<int:pk>/', squad_raiting, name='squad-add-res-rating'),
+    path('squad/squad-total-rating/<int:pk>/', squad_raiting, name='squad-total-rating'),
+
 
 ]

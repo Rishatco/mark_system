@@ -118,9 +118,6 @@ def save_student(request, id):
         raise Http404('Такого студента не существует')
 
 
-
-
-
 def squad_update_view(request, id):
     if request.method=="GET":
      try :

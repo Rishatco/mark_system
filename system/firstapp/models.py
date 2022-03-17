@@ -47,13 +47,20 @@ class SquadModel(models.Model):
     def get_del_url(self):
         return reverse('squad-delete', args=[str(self.id)])
 
-    def get_raiting_url(self):
-        return reverse('raiting', args=[str(self.id)])
+    def get_rating_url(self):
+        return reverse('rating', args=[str(self.id)])
 
-    def get_total_url(self):
-        return reverse('squad-raiting', args=[str(self.id)])
+    def get_study_rating_url(self):
+        return reverse('squad-study-rating', args=[str(self.id)])
 
+    def get_visiting_rating_url(self):
+        return  reverse('squad-visiting-rating', args=[str(self.id)])
 
+    def get_add_res_rating_url(self):
+        return  reverse('squad-add-res-rating', args=[str(self.id)])
+
+    def get_total_rating(self):
+        return  reverse('squad-total-rating', args=[str(self.id)])
 class DepartamentModel(models.Model):
     # полное имя кафедры
     full_name = models.CharField(max_length=300, unique=True)
