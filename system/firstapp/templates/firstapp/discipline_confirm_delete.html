@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block content%}
-<h1>Удалить дисциплину</h1>
+<h1>Удаление дисциплины</h1>
     <form action="" method="post">{% csrf_token %}
-      <p>Вы точно хотите удалить эту дисциплину "{{ dicsipline }}"?</p>
+      <p>Вы точно хотите удалить эту дисциплину "{{ dicsipline.name }}"?</p>
       <input type="submit" value="Потвердить" />
     </form>
 {% endblock content %}

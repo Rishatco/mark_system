@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Title: {{squadmodel.number}}</h1>
+<h1>Номер взвода: {{squadmodel.number}}</h1>
 <style type="text/css">
     table {
         border-collapse: collapse;
@@ -12,23 +12,23 @@
     }
 </style>
 
-<p><strong>Кафедра:</strong><a>{{squadmodel.departament}}</a></p>
-<p><strong>Специальность:</strong><a>{{squadmodel.specialization}}</a></p>
+<p><strong>Кафедра: </strong><a>{{squadmodel.departament}}</a></p>
+<p><strong>Специальность: </strong><a>{{squadmodel.specialization}}</a></p>
     <div id="students">
         <div style="margin-left:20px;margin-top:20px">
             <h4>Студенты</h4>
             <table>
                 <tbody>
                 <tr>
-                    <th>Фамилия</th>
-                    <th>Имя</th>
-                    <th>Отчество</th>
+                    {% for title in titles %}
+                    <td align="center">{{title}}</td>
+                    {% endfor %}
                 </tr>
                 {% for student in students %}
                 <tr>
-                    <td>{{student.surname}}</td>
-                    <td>{{student.name}}</td>
-                    <td>{{student.patronymic}}</td>
+                    {% for student_data in student %}
+                    <td align="center">{{student_data}}</td>
+                    {% endfor %}
                 </tr>
                 {% endfor %}
                 </tbody>

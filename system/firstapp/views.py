@@ -3,18 +3,46 @@ from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.urls import reverse_lazy
 from django.views import generic
-
-
 from .forms import StudentForm
-
 from .models import StudentModel, SquadModel, Teacher, Discipline, SquadDiscipline, Mark
 
+def check_perm(request):
+    if request.user.is_superuser:
+        return redirect('squads/')
+    else:
+        return redirect("/student_stat/")
+
+def student_stat(request):
+    surname = request.user.studentmodel.surname
+    name = request.user.studentmodel.name
+    patronymic = request.user.studentmodel.patronymic
+
+    squad = request.user.studentmodel.squad
+    disciplines = squad.squaddiscipline_set.all()
+    marks = Mark.objects.filter(discipline__in=disciplines, student=request.user.studentmodel)
+    dates = marks.dates("date", "day")
+    table = []
+    title = ["Дисциплины"]
+    for date in dates:
+        title.append(str(date))
+    for discipline in disciplines:
+        dis_report = []
+        dis_report.append(discipline.discipline.name)
+        for date in dates:
+            mark = marks.filter(date= date,discipline= discipline)[0]
+            dis_report.append(mark.ball)
+        table.append(dis_report)
+
+    context = {"titles": title, "reports": table, "surname": surname, "name": name,"patronymic": patronymic, "squad": squad.number}
+    return render(request, "student_info.html", context)
 
 def squad_study_raiting(request, pk):
     if request.method == "GET":
         squad = SquadModel.objects.get(id=pk)
         students = StudentModel.objects.filter(squad=squad)
+        discipline = Discipline.objects.get(name="дополнительные обязанности")
         squad_disciplines = SquadDiscipline.objects.filter(squad=squad)
+        squad_disciplines = squad_disciplines.exclude(discipline= discipline)
         raiting_list = []
         for student in students:
             cnt_ball = 0
@@ -25,12 +53,13 @@ def squad_study_raiting(request, pk):
                     if mark.ball != -1:
                         cnt_ball += 1
                         cur_ball += mark.ball
-            cur_student = [student, cur_ball/cnt_ball]
+            cur_student = [str(student), cur_ball/cnt_ball]
             raiting_list.append(cur_student)
         raiting_list.sort(key=lambda x: x[1])
         raiting_list.reverse()
-        raiting_list = map(lambda x: x[0], raiting_list)
-        context = {"students": raiting_list, "squadmodel": squad}
+        raiting_list = map(lambda x: [x[0], float('%.2f'%x[1])], raiting_list)
+        titles = ["ФИО", "Средная оценка"]
+        context = {"students": raiting_list, "squadmodel": squad, "titles": titles}
         return  render(request, "firstapp/squad_raiting.html",context)
 
 def squad_visiting_raiting(request, pk):
@@ -40,66 +69,100 @@ def squad_visiting_raiting(request, pk):
         squad_disciplines = SquadDiscipline.objects.filter(squad=squad)
         raiting_list = []
         for student in students:
-            cnt_ball = 0
-            cur_ball = 0
+            cnt_pass = 0
             for discipline in squad_disciplines:
                 cur_marks = Mark.objects.filter(student=student, discipline=discipline)
                 for mark in cur_marks:
-                    if mark.ball != -1:
-                        cnt_ball += 1
-                        cur_ball += mark.ball
-            cur_student = [student, cur_ball/cnt_ball]
+                    if mark.ball == -1:
+                        cnt_pass += 1
+            cur_student = [student, cnt_pass]
             raiting_list.append(cur_student)
         raiting_list.sort(key=lambda x: x[1])
-        raiting_list.reverse()
-        raiting_list = map(lambda x: x[0], raiting_list)
-        context = {"students": raiting_list, "squadmodel": squad}
+        #raiting_list = map(lambda x: x[0], raiting_list)
+        titles = ["ФИО", "Количество пропусков"]
+        context = {"students": raiting_list, "squadmodel": squad, "titles": titles}
         return  render(request, "firstapp/squad_raiting.html",context)
 
 def squad_addres_raiting(request, pk):
     if request.method == "GET":
         squad = SquadModel.objects.get(id=pk)
         students = StudentModel.objects.filter(squad=squad)
-        squad_disciplines = SquadDiscipline.objects.filter(squad=squad)
+        discipline = Discipline.objects.get(name="дополнительные обязанности")
+        squad_disciplines = SquadDiscipline.objects.filter(squad=squad, discipline=discipline)
         raiting_list = []
         for student in students:
-            cnt_ball = 0
             cur_ball = 0
             for discipline in squad_disciplines:
                 cur_marks = Mark.objects.filter(student=student, discipline=discipline)
                 for mark in cur_marks:
                     if mark.ball != -1:
-                        cnt_ball += 1
                         cur_ball += mark.ball
-            cur_student = [student, cur_ball/cnt_ball]
+            cur_student = [student, cur_ball]
             raiting_list.append(cur_student)
         raiting_list.sort(key=lambda x: x[1])
         raiting_list.reverse()
-        raiting_list = map(lambda x: x[0], raiting_list)
-        context = {"students": raiting_list, "squadmodel": squad}
+        #raiting_list = map(lambda x: x[0], raiting_list)
+        titles = ["ФИО", "Дополнительная активность"]
+        context = {"students": raiting_list, "squadmodel": squad, "titles": titles}
         return  render(request, "firstapp/squad_raiting.html",context)
+
+class Student_Stat():
+    def __init__(self):
+        self.fio = None
+        self.study_ball = 0
+        self.addres_ball = 0
+        self.cnt_pass = 0
 
 def squad_total_raiting(request, pk):
     if request.method == "GET":
         squad = SquadModel.objects.get(id=pk)
         students = StudentModel.objects.filter(squad=squad)
+        discipline = Discipline.objects.get(name="дополнительные обязанности")
         squad_disciplines = SquadDiscipline.objects.filter(squad=squad)
+        squad_disciplines_addres = squad_disciplines.get(discipline=discipline)
+        squad_disciplines = squad_disciplines.exclude(discipline=discipline)
         raiting_list = []
         for student in students:
-            cnt_ball = 0
+            cnt_pass = 0
             cur_ball = 0
+            addres_ball =0
+            student_stat = Student_Stat()
             for discipline in squad_disciplines:
                 cur_marks = Mark.objects.filter(student=student, discipline=discipline)
                 for mark in cur_marks:
                     if mark.ball != -1:
-                        cnt_ball += 1
                         cur_ball += mark.ball
-            cur_student = [student, cur_ball/cnt_ball]
-            raiting_list.append(cur_student)
-        raiting_list.sort(key=lambda x: x[1])
-        raiting_list.reverse()
-        raiting_list = map(lambda x: x[0], raiting_list)
-        context = {"students": raiting_list, "squadmodel": squad}
+                    else:
+                        cnt_pass += 1
+            cur_marks = Mark.objects.filter(student=student, discipline=squad_disciplines_addres)
+            for mark in cur_marks:
+                if mark.ball != -1:
+                    addres_ball += mark.ball
+
+            student_stat.addres_ball = addres_ball
+            student_stat.study_ball =cur_ball
+            student_stat.cnt_pass = cnt_pass
+            student_stat.fio = str(student)
+            raiting_list.append(student_stat)
+        max_study =0
+        max_addres =0
+        max_pass =0
+        for x in raiting_list:
+            max_study = max(max_study, x.study_ball)
+            max_addres = max(max_addres, x.addres_ball)
+            max_pass = max(max_pass, x.cnt_pass)
+        for x in raiting_list:
+            x.study_ball = x.study_ball/max_study*60
+            x.addres_ball = x.addres_ball/max_addres*25
+            x.cnt_pass = (max_pass-x.cnt_pass)/max_pass*15
+        raiting = []
+        for x in raiting_list:
+            raiting.append([x.fio, float('%.2f'%x.study_ball),float('%.2f'%x.addres_ball),
+                            float('%.2f'%x.cnt_pass), float('%.2f'%(x.study_ball+x.addres_ball+x.cnt_pass))])
+        raiting.sort(key= lambda x: x[1]+x[2]+x[3])
+        raiting.reverse()
+        titles = ["ФИО", "Баллы за учебу", "Баллы за доп активность","Баллы за посещение", "Суммарный балл"]
+        context = {"students": raiting, "squadmodel": squad, "titles": titles}
         return  render(request, "firstapp/squad_raiting.html",context)
 
 
@@ -132,7 +195,7 @@ def rating_log(request, pk):
                             marks[-1]["marks"].append(curMark.ball)
                     else:
                         marks[-1]["marks"].append(0)
-            context = {"squad": squad, "students": students, "marks": curMarks, "dates": strDate, "stmarks": marks}
+            context = {"squad": squad, "students": students, "marks": curMarks, "dates": strDate, "stmarks": marks, "cur_discipline": discipline}
 
             return render(request, "firstapp/raiting_log.html", context)
     else:
@@ -198,6 +261,18 @@ def squad_update_view(request, id):
 class SquadList(generic.ListView):
     model = SquadModel
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            data = Discipline.objects.get(name="дополнительные обязанности")
+        except Discipline.DoesNotExist:
+            disp = Discipline()
+            disp.name = "дополнительные обязанности"
+            disp.type_exam = disp.TYPE_EXAM[0]
+            disp.save()
+        return context
+
+
 class SquadDetailView(generic.DetailView):
     model = SquadModel
 
@@ -208,7 +283,14 @@ class SquadUpdateView(generic.UpdateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(SquadUpdateView, self).get_context_data(**kwargs)
-        disciplines = Discipline.objects.all()
+        disciplines = Discipline.objects.exclude(name="дополнительные обязанности" )
+        try:
+            SquadDiscipline.objects.get(discipline= Discipline.objects.get(name="дополнительные обязанности"), squad=self.object)
+        except:
+            discipline = SquadDiscipline()
+            discipline.discipline = Discipline.objects.get(name="дополнительные обязанности")
+            discipline.squad = self.object
+            discipline.save()
         context['disciplines'] =disciplines
         return context
 
@@ -249,11 +331,13 @@ class SquadUpdateView(generic.UpdateView):
                 student.squad=squad
                 student.save()
 
-        disciplines = request.POST.getlist("discipline")
-        discipline_pk = request.POST.getlist("discipline_pk")[1:]
-        # получение id существующих дисциплин, так как клиент для новых студентов возвращает пустую строку как id
-        id_discp_upd = list(filter(lambda x: x != '', discipline_pk))
+        disciplines = request.POST.getlist("discipline") # список названий дисциплин
+        discipline_pk = request.POST.getlist("discipline_pk")[1:] # спискок их id
+        Addres_pk = SquadDiscipline.objects.get(discipline= Discipline.objects.get(name="дополнительные обязанности"),squad=squad).pk # id дисциплны доп обяз
+        # получение id существующих дисциплин, так как клиент для новых дисциплин возвращает пустую строку как id
+        id_discp_upd = list(filter(lambda x: x != '' and x !=str(Addres_pk), discipline_pk))
         squadDiscipline = SquadDiscipline.objects.filter(squad=squad)
+        squadDiscipline = SquadDiscipline.objects.exclude(discipline= Discipline.objects.get(name="дополнительные обязанности"))
         squad_dicp_upd = SquadDiscipline.objects.filter(id__in=id_discp_upd)
         # id всех дисциплин
         discipline_id = map(lambda x: x.id, squadDiscipline)
@@ -267,13 +351,13 @@ class SquadUpdateView(generic.UpdateView):
 
         for x in range(len(discipline_pk)):
             # изменение уже сущетсвующих элементов
-            if (discipline_pk[x] != ''):
+            if (discipline_pk[x] != '' and discipline_pk[x] != str(Addres_pk)):
                 discipline = SquadDiscipline.objects.get(id=discipline_pk[x])
                 discipline.squad = squad
                 dirDiscp = Discipline.objects.get(name=disciplines[x])
                 discipline.discipline =dirDiscp
                 discipline.save()
-            else:
+            elif (discipline_pk[x] != str(Addres_pk)):
                 discipline = SquadDiscipline()
                 discipline.squad = squad
                 dirDiscp = Discipline.objects.get(name=disciplines[x])
@@ -286,6 +370,11 @@ class SquadCreateView(generic.CreateView):
     template_name = "squadmodel_create.html"
     fields = ["number", "departament", "specialization"]
     model = SquadModel
+
+    def post(self, request, *args, **kwargs):
+        squad = super().post(request, *args, **kwargs)
+
+        return squad
 
 class SquadDeleteView(generic.DeleteView):
     model = SquadModel
@@ -333,7 +422,8 @@ class DisciplineEditView(generic.UpdateView):
 
 class DisciplineDeleteView(generic.DeleteView):
     model = Discipline
-    success_url = reverse_lazy('discipline')
+    success_url = reverse_lazy('disciplines')
 
 class DisciplineDetailView(generic.DetailView):
     model =  Discipline
+

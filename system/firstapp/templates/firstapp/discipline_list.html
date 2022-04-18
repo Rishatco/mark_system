@@ -1,16 +1,18 @@
 {% extends 'base.html' %}
 <title>Discipline</title>
 {% block content %}
-  <h1>Discipline List</h1>
+  <h1>Список дисциплин</h1>
   <div class="nav-right">
     <a href="{% url 'disсipline-create' %}">Добавить новую дисциплину</a><br>
   </div>
   {% if discipline_list %}
   <ul>
     {% for discipline in discipline_list %}
+    {% if discipline.name != "дополнительные обязанности" %}
       <li>
         <a href="{{ discipline.get_absolute_url }}">{{ discipline.name }}</a>
       </li>
+    {% endif %}
     {% endfor %}
   </ul>
   {% else %}

@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Система оценивания студентов ВУЦ</title>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400"
+    rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  </head>
+
+  <style type="text/css">
+    table {
+        border-collapse: collapse;
+    }
+
+    table th,
+    table td {
+        border: 1px solid #000;
+    }
+</style>
+
+  <body>
+    <div>
+      <header>
+        <div class="nav-left">
+          <h1><a href="{% url 'squads' %}">Система оценивания студентов Вуц</a></h1>
+        </div>
+
+         <div class="nav-right">
+          <a href="{% url 'logout' %}">Выйти из системы</a><br>
+         </div>
+
+      </header>
+        <h1>Номер взвода: {{squad}}</h1>
+
+        <p><strong>Фамилия: </strong><a>{{surname}}</a></p>
+        <p><strong>Имя: </strong><a>{{name}}</a></p>
+        <p><strong>Отчество: </strong><a>{{patronymic}}</a></p>
+
+        <table>
+                <tbody>
+                <tr>
+                    {% for title in titles %}
+                    <td align="center">{{title}}</td>
+                    {% endfor %}
+                </tr>
+                {% for report in reports %}
+                <tr>
+                    {% for x in report %}
+                    <td align="center">{{x}}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+    </div>
+  </body>
+</html>

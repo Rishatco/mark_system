@@ -104,6 +104,7 @@
                 </tr>
                 {% if squadmodel.squaddiscipline_set.all %}
                 {% for discipline in squadmodel.squaddiscipline_set.all %}
+                {% if discipline.discipline.name != "дополнительные обязанности"%}
                 <tr>
                     <td hidden="hidden" id="discipline_pk"><input type="text" name="discipline_pk" value="{{discipline.pk}}"/></td>
                     <td>
@@ -122,6 +123,7 @@
                         <button class="delbtn" type="button">Удалить</button>
                     </td>
                 </tr>
+                {% endif %}
                 {% endfor %}
                 {% endif %}
                 </tbody>

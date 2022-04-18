@@ -23,7 +23,11 @@
 <form id="choose_dis" name="discipline">
 <select id="discipline" name="choose_discipline">
     {% for discipline in squad.squaddiscipline_set.all %}
+    {% if discipline.discipline == cur_discipline%}
+    <option selected>{{discipline.discipline.name}}</option>
+    {% else %}
     <option>{{discipline.discipline.name}}</option>
+    {% endif %}
     {% endfor %}
 </select>
     <button type="submit">Выбрать дисциплину</button>

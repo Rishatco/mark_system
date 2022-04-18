@@ -17,9 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 from django.views.generic import TemplateView
+from django.conf.urls import include
 
-from firstapp.views import SquadList, rating_log,squad_study_raiting,squad_visiting_raiting,squad_addres_raiting,squad_total_raiting
-from firstapp.views import SquadDetailView
+from firstapp.views import SquadList, rating_log,squad_study_raiting,squad_visiting_raiting,squad_addres_raiting,squad_total_raiting,student_stat
+from firstapp.views import SquadDetailView, check_perm
 from firstapp.views import SquadUpdateView
 from firstapp.views import save_student,DisciplineDetailView
 from firstapp.views import SquadCreateView,TeacherDetailView
@@ -45,10 +46,14 @@ urlpatterns = [
     re_path(r'^discipline-detele/(?P<pk>\d+)$', DisciplineDeleteView.as_view(), name="discipline-delete"),
     re_path(r'^discipline/(?P<pk>\d+)$', DisciplineDetailView.as_view(), name="discipline-detail"),
     path('squad/rating/<int:pk>/', rating_log, name='rating'),
-    path('squad/squad-visiting-rating/<int:pk>/', squad_visiting_raiting, name='squad-study-rating'),
-    path('squad/squad-study-rating/<int:pk>/', squad_study_raiting, name='squad-visiting-rating'),
+    path('squad/squad-study-rating/<int:pk>/', squad_study_raiting, name='squad-study-rating'),
+    path('squad/squad-visiting-rating/<int:pk>/', squad_visiting_raiting, name='squad-visiting-rating'),
     path('squad/squad-addres-rating/<int:pk>/', squad_addres_raiting, name='squad-add-res-rating'),
     path('squad/squad-total-rating/<int:pk>/', squad_total_raiting, name='squad-total-rating'),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('student_stat/', student_stat, name="student_stat"),
+    path('chech_perm/', check_perm, name="check_perm")
+   # path('accounts/profile/', student_stat)
 
 
 ]

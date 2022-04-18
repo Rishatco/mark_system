@@ -56,7 +56,7 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATE_DIR,os.path.join(BASE_DIR,"firstapp\\templates\\firstapp")],
+        'DIRS': [TEMPLATE_DIR,os.path.join(BASE_DIR,"firstapp\\templates\\firstapp"),os.path.join(BASE_DIR,"firstapp\\templates\\firstapp\\registration")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -130,3 +130,6 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = 'check_perm'
+LOGOUT_REDIRECT_URL = 'login'
