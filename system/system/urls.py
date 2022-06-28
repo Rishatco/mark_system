@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.views.generic import TemplateView
 from django.conf.urls import include
-
+from django.contrib.auth import views
 from firstapp.views import SquadList, rating_log,squad_study_raiting,squad_visiting_raiting,squad_addres_raiting,squad_total_raiting,student_stat
 from firstapp.views import SquadDetailView, check_perm
 from firstapp.views import SquadUpdateView
@@ -29,7 +29,7 @@ from firstapp.views import SquadDeleteView,DisciplineCreateView, DisciplineEditV
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", SquadList.as_view(), name='squads'),
+   # path("", SquadList.as_view(), name='squads'),
     path('squads/', SquadList.as_view(), name='squads'),
     path('teachers/', TeachersList.as_view(), name='teachers'),
     path('disciplines/', DisciplinesList.as_view(), name='disciplines'),
@@ -50,6 +50,7 @@ urlpatterns = [
     path('squad/squad-visiting-rating/<int:pk>/', squad_visiting_raiting, name='squad-visiting-rating'),
     path('squad/squad-addres-rating/<int:pk>/', squad_addres_raiting, name='squad-add-res-rating'),
     path('squad/squad-total-rating/<int:pk>/', squad_total_raiting, name='squad-total-rating'),
+    path('', views.LoginView.as_view(), name="login"),
     path('accounts/', include('django.contrib.auth.urls')),
     path('student_stat/', student_stat, name="student_stat"),
     path('chech_perm/', check_perm, name="check_perm")

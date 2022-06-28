@@ -8,7 +8,7 @@ from .models import StudentModel, SquadModel, Teacher, Discipline, SquadDiscipli
 
 def check_perm(request):
     if request.user.is_superuser:
-        return redirect('squads/')
+        return redirect('../squads/')
     else:
         return redirect("/student_stat/")
 

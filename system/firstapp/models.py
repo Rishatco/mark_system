@@ -25,14 +25,14 @@ class StudentModel(models.Model):
     def __str__(self):
         return self.surname + ' ' + self.name + ' ' + self.patronymic
 
-    @receiver(post_save, sender=User)
-    def create_user_profile(sender, instance, created, **kwargs):
-        if created:
-            StudentModel.objects.create(user=instance)
+    # @receiver(post_save, sender=User)
+    # def create_user_profile(sender, instance, created, **kwargs):
+    #     if created:
+    #         StudentModel.objects.create(user=instance)
 
-    @receiver(post_save, sender=User)
-    def save_user_profile(sender, instance, **kwargs):
-        instance.studentmodel.save()
+    # @receiver(post_save, sender=User)
+    # def save_user_profile(sender, instance, **kwargs):
+    #     instance.studentmodel.save()
 
 # класс взвода
 class SquadModel(models.Model):

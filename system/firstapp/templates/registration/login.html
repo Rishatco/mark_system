@@ -1,4 +1,33 @@
-{% block content %}
+
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Система оценивания студентов ВУЦ</title>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400"
+    rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  </head>
+
+  <style type="text/css">
+    table {
+        border-collapse: collapse;
+    }
+
+    table th,
+    table td {
+        border: 1px solid #000;
+    }
+</style>
+
+  <body>
+    <div>
+      <header>
+        <div class="nav-left">
+          <h1><a href="{% url 'squads' %}">Система оценивания студентов Вуц</a></h1>
+        </div>
+      </header>
+    </div>
 
 {% if form.errors %}
   <p>Ваш пароль и имя пользователя не совпадают. Пожалуйста повторите попытку.</p>
@@ -18,18 +47,17 @@
 <table>
 
 <tr>
-  <td>{{ form.username.label_tag }}</td>
+  <td>Логин</td>
   <td>{{ form.username }}</td>
 </tr>
 
 <tr>
-  <td>{{ form.password.label_tag }}</td>
+  <td>Пароль</td>
   <td>{{ form.password }}</td>
 </tr>
 </table>
 
-<input type="submit" value="login" />
+<input type="submit" value="войти" />
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
-
-{% endblock %}
+  </body>
