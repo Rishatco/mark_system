@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Номер взвода: {{squadmodel.number}}</h1>
+<h1>Номер взвода: {{groupmodel.number}}</h1>
 <style type="text/css">
     table {
         border-collapse: collapse;
@@ -12,8 +12,8 @@
     }
 </style>
 
-<p><strong>Кафедра: </strong><a>{{squadmodel.departament}}</a></p>
-<p><strong>Специальность: </strong><a>{{squadmodel.specialization}}</a></p>
+<p><strong>Кафедра: </strong><a>{{groupmodel.departament}}</a></p>
+<p><strong>Специальность: </strong><a>{{groupmodel.specialization}}</a></p>
     <div id="students">
         <div style="margin-left:20px;margin-top:20px">
             <h4>Студенты</h4>

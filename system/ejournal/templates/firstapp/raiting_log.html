@@ -22,7 +22,7 @@
 
 <form id="choose_dis" name="discipline">
 <select id="discipline" name="choose_discipline">
-    {% for discipline in squad.squaddiscipline_set.all %}
+    {% for discipline in group.groupdiscipline_set.all %}
     {% if discipline.discipline == cur_discipline%}
     <option selected>{{discipline.discipline.name}}</option>
     {% else %}

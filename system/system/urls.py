@@ -19,24 +19,24 @@ from django.urls import path, re_path
 from django.views.generic import TemplateView
 from django.conf.urls import include
 from django.contrib.auth import views
-from ejournal.views import SquadList, rating_log,squad_study_raiting,squad_visiting_raiting,squad_addres_raiting,squad_total_raiting,student_stat
-from ejournal.views import SquadDetailView, check_perm
-from ejournal.views import SquadUpdateView
+from ejournal.views import groupList, rating_log,group_study_raiting,group_visiting_raiting,group_addres_raiting,group_total_raiting,student_stat
+from ejournal.views import groupDetailView, check_perm
+from ejournal.views import groupUpdateView
 from ejournal.views import save_student,DisciplineDetailView
-from ejournal.views import SquadCreateView,TeacherDetailView
+from ejournal.views import groupCreateView,TeacherDetailView
 from  ejournal.views import TeachersList, DisciplinesList, TeacherCreateView, TeacherEditView, TeacherDeleteView
-from ejournal.views import SquadDeleteView,DisciplineCreateView, DisciplineEditView, DisciplineDeleteView
+from ejournal.views import groupDeleteView,DisciplineCreateView, DisciplineEditView, DisciplineDeleteView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-   # path("", SquadList.as_view(), name='squads'),
-    path('squads/', SquadList.as_view(), name='squads'),
+   # path("", groupList.as_view(), name='groups'),
+    path('groups/', groupList.as_view(), name='groups'),
     path('teachers/', TeachersList.as_view(), name='teachers'),
     path('disciplines/', DisciplinesList.as_view(), name='disciplines'),
-    re_path(r'^squad/(?P<pk>\d+)$', SquadDetailView.as_view(), name="squad-detail"),
-    re_path(r'^squad-edit/(?P<pk>\d+)$', SquadUpdateView.as_view(), name="squad-edit" ),
-    path('squads/create', SquadCreateView.as_view(), name="squad-create"),
-    re_path(r'^squad-delete/(?P<pk>\d+)$', SquadDeleteView.as_view(), name="squad-delete" ),
+    re_path(r'^group/(?P<pk>\d+)$', groupDetailView.as_view(), name="group-detail"),
+    re_path(r'^group-edit/(?P<pk>\d+)$', groupUpdateView.as_view(), name="group-edit" ),
+    path('groups/create', groupCreateView.as_view(), name="group-create"),
+    re_path(r'^group-delete/(?P<pk>\d+)$', groupDeleteView.as_view(), name="group-delete" ),
     path('teacher/create', TeacherCreateView.as_view(), name="teacher-create"),
     re_path(r'^teacher-edit/(?P<pk>\d+)$', TeacherEditView.as_view(), name="teacher-edit"),
     re_path(r'^teacher-detele/(?P<pk>\d+)$', TeacherDeleteView.as_view(), name="teacher-delete" ),
@@ -45,11 +45,11 @@ urlpatterns = [
     re_path(r'^discipline-edit/(?P<pk>\d+)$', DisciplineEditView.as_view(), name="discipline-edit"),
     re_path(r'^discipline-detele/(?P<pk>\d+)$', DisciplineDeleteView.as_view(), name="discipline-delete"),
     re_path(r'^discipline/(?P<pk>\d+)$', DisciplineDetailView.as_view(), name="discipline-detail"),
-    path('squad/rating/<int:pk>/', rating_log, name='rating'),
-    path('squad/squad-study-rating/<int:pk>/', squad_study_raiting, name='squad-study-rating'),
-    path('squad/squad-visiting-rating/<int:pk>/', squad_visiting_raiting, name='squad-visiting-rating'),
-    path('squad/squad-addres-rating/<int:pk>/', squad_addres_raiting, name='squad-add-res-rating'),
-    path('squad/squad-total-rating/<int:pk>/', squad_total_raiting, name='squad-total-rating'),
+    path('group/rating/<int:pk>/', rating_log, name='rating'),
+    path('group/group-study-rating/<int:pk>/', group_study_raiting, name='group-study-rating'),
+    path('group/group-visiting-rating/<int:pk>/', group_visiting_raiting, name='group-visiting-rating'),
+    path('group/group-addres-rating/<int:pk>/', group_addres_raiting, name='group-add-res-rating'),
+    path('group/group-total-rating/<int:pk>/', group_total_raiting, name='group-total-rating'),
     path('', views.LoginView.as_view(), name="login"),
     path('accounts/', include('django.contrib.auth.urls')),
     path('student_stat/', student_stat, name="student_stat"),

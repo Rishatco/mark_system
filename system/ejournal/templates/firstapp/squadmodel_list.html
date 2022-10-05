@@ -5,13 +5,13 @@
 {% block content %}
   <h1>Список взводов</h1>
   <div class="nav-right">
-    <a href="{% url 'squad-create' %}">Добавить новый взвод</a><br>
+    <a href="{% url 'group-create' %}">Добавить новый взвод</a><br>
   </div>
-  {% if squadmodel_list %}
+  {% if groupmodel_list %}
   <ul>
-    {% for squad in squadmodel_list %}
+    {% for group in groupmodel_list %}
       <li>
-        <a href="{{ squad.get_absolute_url }}">{{ squad.number }}</a>
+        <a href="{{ group.get_absolute_url }}">{{ group.number }}</a>
       </li>
     {% endfor %}
   </ul>

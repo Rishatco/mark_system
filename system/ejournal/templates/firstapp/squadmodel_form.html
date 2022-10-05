@@ -63,7 +63,7 @@
                         <th>Имя</th>
                         <th>Отчество</th>
                     </tr>
-                    {% for student in squadmodel.studentmodel_set.all %}
+                    {% for student in groupmodel.studentmodel_set.all %}
                     <tr>
                         <td hidden="hidden"><input name="id" type="text" value="{{student.pk}}"/></td>
                         <td><input name="surname" type="text" value="{{student.surname}}"/></td>
@@ -102,8 +102,8 @@
                         <button class="delbtn" type="button">Удалить</button>
                     </td>
                 </tr>
-                {% if squadmodel.squaddiscipline_set.all %}
-                {% for discipline in squadmodel.squaddiscipline_set.all %}
+                {% if groupmodel.groupdiscipline_set.all %}
+                {% for discipline in groupmodel.groupdiscipline_set.all %}
                 {% if discipline.discipline.name != "дополнительные обязанности"%}
                 <tr>
                     <td hidden="hidden" id="discipline_pk"><input type="text" name="discipline_pk" value="{{discipline.pk}}"/></td>

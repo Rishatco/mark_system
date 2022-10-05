@@ -8,7 +8,7 @@ from .models import Student, StudentGroup, Teacher, Discipline, GroupDiscipline,
 
 def check_perm(request):
     if request.user.is_superuser:
-        return redirect('../squads/')
+        return redirect('../groups/')
     else:
         return redirect("/student_stat/")
 
@@ -17,8 +17,8 @@ def student_stat(request):
     name = request.user.studentmodel.name
     patronymic = request.user.studentmodel.patronymic
 
-    squad = request.user.studentmodel.squad
-    disciplines = squad.squaddiscipline_set.all()
+    group = request.user.studentmodel.group
+    disciplines = group.groupdiscipline_set.all()
     marks = Mark.objects.filter(discipline__in=disciplines, student=request.user.studentmodel)
     dates = marks.dates("date", "day")
     table = []
@@ -33,21 +33,21 @@ def student_stat(request):
             dis_report.append(mark.ball)
         table.append(dis_report)
 
-    context = {"titles": title, "reports": table, "surname": surname, "name": name,"patronymic": patronymic, "squad": squad.number}
+    context = {"titles": title, "reports": table, "surname": surname, "name": name,"patronymic": patronymic, "group": group.number}
     return render(request, "student_info.html", context)
 
-def squad_study_raiting(request, pk):
+def group_study_raiting(request, pk):
     if request.method == "GET":
-        squad = StudentGroup.objects.get(id=pk)
-        students = Student.objects.filter(squad=squad)
+        group = StudentGroup.objects.get(id=pk)
+        students = Student.objects.filter(group=group)
         discipline = Discipline.objects.get(name="дополнительные обязанности")
-        squad_disciplines = GroupDiscipline.objects.filter(squad=squad)
-        squad_disciplines = squad_disciplines.exclude(discipline= discipline)
+        group_disciplines = GroupDiscipline.objects.filter(group=group)
+        group_disciplines = group_disciplines.exclude(discipline= discipline)
         raiting_list = []
         for student in students:
             cnt_ball = 0
             cur_ball = 0
-            for discipline in squad_disciplines:
+            for discipline in group_disciplines:
                 cur_marks = Mark.objects.filter(student=student, discipline=discipline)
                 for mark in cur_marks:
                     if mark.ball != -1:
@@ -59,18 +59,18 @@ def squad_study_raiting(request, pk):
         raiting_list.reverse()
         raiting_list = map(lambda x: [x[0], float('%.2f'%x[1])], raiting_list)
         titles = ["ФИО", "Средная оценка"]
-        context = {"students": raiting_list, "squadmodel": squad, "titles": titles}
-        return  render(request, "ejournal/squad_raiting.html",context)
+        context = {"students": raiting_list, "groupmodel": group, "titles": titles}
+        return  render(request, "ejournal/group_raiting.html",context)
 
-def squad_visiting_raiting(request, pk):
+def group_visiting_raiting(request, pk):
     if request.method == "GET":
-        squad = StudentGroup.objects.get(id=pk)
-        students = Student.objects.filter(squad=squad)
-        squad_disciplines = GroupDiscipline.objects.filter(squad=squad)
+        group = StudentGroup.objects.get(id=pk)
+        students = Student.objects.filter(group=group)
+        group_disciplines = GroupDiscipline.objects.filter(group=group)
         raiting_list = []
         for student in students:
             cnt_pass = 0
-            for discipline in squad_disciplines:
+            for discipline in group_disciplines:
                 cur_marks = Mark.objects.filter(student=student, discipline=discipline)
                 for mark in cur_marks:
                     if mark.ball == -1:
@@ -80,19 +80,19 @@ def squad_visiting_raiting(request, pk):
         raiting_list.sort(key=lambda x: x[1])
         #raiting_list = map(lambda x: x[0], raiting_list)
         titles = ["ФИО", "Количество пропусков"]
-        context = {"students": raiting_list, "squadmodel": squad, "titles": titles}
-        return  render(request, "ejournal/squad_raiting.html",context)
+        context = {"students": raiting_list, "groupmodel": group, "titles": titles}
+        return  render(request, "ejournal/group_raiting.html",context)
 
-def squad_addres_raiting(request, pk):
+def group_addres_raiting(request, pk):
     if request.method == "GET":
-        squad = StudentGroup.objects.get(id=pk)
-        students = Student.objects.filter(squad=squad)
+        group = StudentGroup.objects.get(id=pk)
+        students = Student.objects.filter(group=group)
         discipline = Discipline.objects.get(name="дополнительные обязанности")
-        squad_disciplines = GroupDiscipline.objects.filter(squad=squad, discipline=discipline)
+        group_disciplines = GroupDiscipline.objects.filter(group=group, discipline=discipline)
         raiting_list = []
         for student in students:
             cur_ball = 0
-            for discipline in squad_disciplines:
+            for discipline in group_disciplines:
                 cur_marks = Mark.objects.filter(student=student, discipline=discipline)
                 for mark in cur_marks:
                     if mark.ball != -1:
@@ -103,8 +103,8 @@ def squad_addres_raiting(request, pk):
         raiting_list.reverse()
         #raiting_list = map(lambda x: x[0], raiting_list)
         titles = ["ФИО", "Дополнительная активность"]
-        context = {"students": raiting_list, "squadmodel": squad, "titles": titles}
-        return  render(request, "ejournal/squad_raiting.html",context)
+        context = {"students": raiting_list, "groupmodel": group, "titles": titles}
+        return  render(request, "ejournal/group_raiting.html",context)
 
 class Student_Stat():
     def __init__(self):
@@ -113,28 +113,28 @@ class Student_Stat():
         self.addres_ball = 0
         self.cnt_pass = 0
 
-def squad_total_raiting(request, pk):
+def group_total_raiting(request, pk):
     if request.method == "GET":
-        squad = StudentGroup.objects.get(id=pk)
-        students = Student.objects.filter(squad=squad)
+        group = StudentGroup.objects.get(id=pk)
+        students = Student.objects.filter(group=group)
         discipline = Discipline.objects.get(name="дополнительные обязанности")
-        squad_disciplines = GroupDiscipline.objects.filter(squad=squad)
-        squad_disciplines_addres = squad_disciplines.get(discipline=discipline)
-        squad_disciplines = squad_disciplines.exclude(discipline=discipline)
+        group_disciplines = GroupDiscipline.objects.filter(group=group)
+        group_disciplines_addres = group_disciplines.get(discipline=discipline)
+        group_disciplines = group_disciplines.exclude(discipline=discipline)
         raiting_list = []
         for student in students:
             cnt_pass = 0
             cur_ball = 0
             addres_ball =0
             student_stat = Student_Stat()
-            for discipline in squad_disciplines:
+            for discipline in group_disciplines:
                 cur_marks = Mark.objects.filter(student=student, discipline=discipline)
                 for mark in cur_marks:
                     if mark.ball != -1:
                         cur_ball += mark.ball
                     else:
                         cnt_pass += 1
-            cur_marks = Mark.objects.filter(student=student, discipline=squad_disciplines_addres)
+            cur_marks = Mark.objects.filter(student=student, discipline=group_disciplines_addres)
             for mark in cur_marks:
                 if mark.ball != -1:
                     addres_ball += mark.ball
@@ -162,8 +162,8 @@ def squad_total_raiting(request, pk):
         raiting.sort(key= lambda x: x[1]+x[2]+x[3])
         raiting.reverse()
         titles = ["ФИО", "Баллы за учебу", "Баллы за доп активность","Баллы за посещение", "Суммарный балл"]
-        context = {"students": raiting, "squadmodel": squad, "titles": titles}
-        return  render(request, "ejournal/squad_raiting.html",context)
+        context = {"students": raiting, "groupmodel": group, "titles": titles}
+        return  render(request, "ejournal/group_raiting.html",context)
 
 
 
@@ -171,15 +171,15 @@ def rating_log(request, pk):
     if request.method == "GET":
         curDis = request.GET.get("choose_discipline")
         if curDis == None:
-            squad = StudentGroup.objects.get(id=pk)
-            context = {"squad": squad}
+            group = StudentGroup.objects.get(id=pk)
+            context = {"group": group}
             return render(request, "ejournal/raiting_log.html", context)
         else:
             discipline = Discipline.objects.get(name=curDis)
-            squad = StudentGroup.objects.get(id=pk)
-            squadDiscipline = GroupDiscipline.objects.get(discipline=discipline, squad=squad)
-            students = Student.objects.filter(squad=squad)
-            curMarks = Mark.objects.filter(discipline=squadDiscipline)
+            group = StudentGroup.objects.get(id=pk)
+            groupDiscipline = GroupDiscipline.objects.get(discipline=discipline, group=group)
+            students = Student.objects.filter(group=group)
+            curMarks = Mark.objects.filter(discipline=groupDiscipline)
             studentsMark =curMarks.filter(student__in=students)
             dates =set(curMarks.values_list('date',flat=True))
             strDate =sorted( list(map(lambda x: x.strftime("%Y-%m-%d"), dates)))
@@ -187,26 +187,26 @@ def rating_log(request, pk):
             for student in students:
                 marks.append({"student": student, "marks":[]})
                 for date in strDate:
-                    if Mark.objects.filter(student=student, date=date,discipline=squadDiscipline).exists():
-                        curMark = Mark.objects.get(student=student, date=str(date), discipline=squadDiscipline)
+                    if Mark.objects.filter(student=student, date=date,discipline=groupDiscipline).exists():
+                        curMark = Mark.objects.get(student=student, date=str(date), discipline=groupDiscipline)
                         if curMark.ball == -1:
                             marks[-1]["marks"].append('н')
                         else:
                             marks[-1]["marks"].append(curMark.ball)
                     else:
                         marks[-1]["marks"].append(0)
-            context = {"squad": squad, "students": students, "marks": curMarks, "dates": strDate, "stmarks": marks, "cur_discipline": discipline}
+            context = {"group": group, "students": students, "marks": curMarks, "dates": strDate, "stmarks": marks, "cur_discipline": discipline}
 
             return render(request, "ejournal/raiting_log.html", context)
     else:
         curDis = request.GET.get("choose_discipline")
         dates = request.POST.getlist("data")
         ocenkas = request.POST.getlist('ocenka')
-        squad = StudentGroup.objects.get(id=pk)
+        group = StudentGroup.objects.get(id=pk)
         discipline = Discipline.objects.get(name=curDis)
-        squadDiscipline = GroupDiscipline.objects.get(discipline=discipline, squad=squad)
-        students =list(Student.objects.filter(squad=squad))
-        curMarks = Mark.objects.filter(discipline=squadDiscipline)
+        groupDiscipline = GroupDiscipline.objects.get(discipline=discipline, group=group)
+        students =list(Student.objects.filter(group=group))
+        curMarks = Mark.objects.filter(discipline=groupDiscipline)
         studentsMark = curMarks.filter(student__in=students)
         studentsMark.delete()
         i =1
@@ -222,7 +222,7 @@ def rating_log(request, pk):
             else:
                 mark.ball = ocenka
             mark.date =dates[i-1]
-            mark.discipline = squadDiscipline
+            mark.discipline = groupDiscipline
             mark.save()
             if i == len(dates):
                 j +=1
@@ -233,7 +233,7 @@ def rating_log(request, pk):
             else:
                 i += 1
 
-        return redirect(squad)
+        return redirect(group)
 
 
 
@@ -245,20 +245,20 @@ def save_student(request, id):
             student.surname = request.POST.get("surname")
             student.patronymic = request.POST.get("patronymic")
             student.save()
-        return HttpResponseRedirect(f"squad-edit/{student.squad.id}")
+        return HttpResponseRedirect(f"group-edit/{student.group.id}")
     except Student.DoesNotExist:
         raise Http404('Такого студента не существует')
 
 
-def squad_update_view(request, id):
+def group_update_view(request, id):
     if request.method=="GET":
      try :
         data = StudentGroup.object.get(id=id)
      except StudentGroup.DoesNotExist:
         raise Http404('такого взвода не сущетвует')
-        return render(request, 'squadmodel_form.html', {})
+        return render(request, 'groupmodel_form.html', {})
 
-class SquadList(generic.ListView):
+class groupList(generic.ListView):
     model = StudentGroup
 
     def get_context_data(self, **kwargs):
@@ -273,23 +273,23 @@ class SquadList(generic.ListView):
         return context
 
 
-class SquadDetailView(generic.DetailView):
+class groupDetailView(generic.DetailView):
     model = StudentGroup
 
-class SquadUpdateView(generic.UpdateView):
+class groupUpdateView(generic.UpdateView):
     model = StudentGroup
     fields = ["number", "departament", "specialization"]
 
 
     def get_context_data(self, *args, **kwargs):
-        context = super(SquadUpdateView, self).get_context_data(**kwargs)
+        context = super(groupUpdateView, self).get_context_data(**kwargs)
         disciplines = Discipline.objects.exclude(name="дополнительные обязанности" )
         try:
-            GroupDiscipline.objects.get(discipline= Discipline.objects.get(name="дополнительные обязанности"), squad=self.object)
+            GroupDiscipline.objects.get(discipline= Discipline.objects.get(name="дополнительные обязанности"), group=self.object)
         except:
             discipline = GroupDiscipline()
             discipline.discipline = Discipline.objects.get(name="дополнительные обязанности")
-            discipline.squad = self.object
+            discipline.group = self.object
             discipline.save()
         context['disciplines'] =disciplines
         return context
@@ -302,10 +302,10 @@ class SquadUpdateView(generic.UpdateView):
         surname =request.POST.getlist('surname')
         patronymic = request.POST.getlist("patronymic")
         # получение текущего взвода
-        squad = StudentGroup.objects.get(id=kwargs['pk'])
+        group = StudentGroup.objects.get(id=kwargs['pk'])
         # получение id существующих студентов, так как клиент для новых студентов возвращает пустую строку как id
         id_upd = list(filter(lambda x: x!='',id))
-        students =Student.objects.filter(squad=squad)
+        students =Student.objects.filter(group=group)
         students_upd =students.filter(id__in= id_upd)
         # id всех студентов
         students_id = map(lambda x: x.id,students )
@@ -328,21 +328,21 @@ class SquadUpdateView(generic.UpdateView):
                 student.name = name[x]
                 student.surname = surname[x]
                 student.patronymic = patronymic[x]
-                student.squad=squad
+                student.group=group
                 student.save()
 
         disciplines = request.POST.getlist("discipline") # список названий дисциплин
         discipline_pk = request.POST.getlist("discipline_pk")[1:] # спискок их id
-        Addres_pk = GroupDiscipline.objects.get(discipline= Discipline.objects.get(name="дополнительные обязанности"), squad=squad).pk # id дисциплны доп обяз
+        Addres_pk = GroupDiscipline.objects.get(discipline= Discipline.objects.get(name="дополнительные обязанности"), group=group).pk # id дисциплны доп обяз
         # получение id существующих дисциплин, так как клиент для новых дисциплин возвращает пустую строку как id
         id_discp_upd = list(filter(lambda x: x != '' and x !=str(Addres_pk), discipline_pk))
-        squadDiscipline = GroupDiscipline.objects.filter(squad=squad)
-        squadDiscipline = GroupDiscipline.objects.exclude(discipline= Discipline.objects.get(name="дополнительные обязанности"))
-        squad_dicp_upd = GroupDiscipline.objects.filter(id__in=id_discp_upd)
+        groupDiscipline = GroupDiscipline.objects.filter(group=group)
+        groupDiscipline = GroupDiscipline.objects.exclude(discipline= Discipline.objects.get(name="дополнительные обязанности"))
+        group_dicp_upd = GroupDiscipline.objects.filter(id__in=id_discp_upd)
         # id всех дисциплин
-        discipline_id = map(lambda x: x.id, squadDiscipline)
+        discipline_id = map(lambda x: x.id, groupDiscipline)
         # id дисциплин, информацию о которых надо обновить
-        discipline_upd_id = map(lambda x: x.id, squad_dicp_upd)
+        discipline_upd_id = map(lambda x: x.id, group_dicp_upd)
         del_discipline = set(discipline_id).difference(set(discipline_upd_id))
         # удаление
         for disc_id in del_discipline:
@@ -353,36 +353,36 @@ class SquadUpdateView(generic.UpdateView):
             # изменение уже сущетсвующих элементов
             if (discipline_pk[x] != '' and discipline_pk[x] != str(Addres_pk)):
                 discipline = GroupDiscipline.objects.get(id=discipline_pk[x])
-                discipline.squad = squad
+                discipline.group = group
                 dirDiscp = Discipline.objects.get(name=disciplines[x])
                 discipline.discipline =dirDiscp
                 discipline.save()
             elif (discipline_pk[x] != str(Addres_pk)):
                 discipline = GroupDiscipline()
-                discipline.squad = squad
+                discipline.group = group
                 dirDiscp = Discipline.objects.get(name=disciplines[x])
                 discipline.discipline = dirDiscp
                 discipline.save()
 
         return super().post(request, *args, **kwargs)
 
-class SquadCreateView(generic.CreateView):
-    template_name = "squadmodel_create.html"
+class groupCreateView(generic.CreateView):
+    template_name = "groupmodel_create.html"
     fields = ["number", "departament", "specialization"]
     model = StudentGroup
 
     def post(self, request, *args, **kwargs):
-        squad = super().post(request, *args, **kwargs)
+        group = super().post(request, *args, **kwargs)
 
-        return squad
+        return group
 
-class SquadDeleteView(generic.DeleteView):
+class groupDeleteView(generic.DeleteView):
     model = StudentGroup
 
-    success_url = reverse_lazy('squads')
+    success_url = reverse_lazy('groups')
     def post(self, request, *args, **kwargs):
-        squad = StudentGroup.objects.get(id=kwargs['pk'])
-        students = Student.objects.filter(squad=squad)
+        group = StudentGroup.objects.get(id=kwargs['pk'])
+        students = Student.objects.filter(group=group)
         students.delete()
         return self.delete(request, *args, **kwargs)
 
