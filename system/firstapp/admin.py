@@ -1,11 +1,11 @@
 from django.contrib import admin
-from .models import StudentModel, SquadModel, DepartamentModel, Teacher,Discipline,Mark,SquadDiscipline
+from .models import Student, StundetGroup, Departament, Teacher,Discipline,Mark,GroupDiscipline
 # Register your models here.
 
-admin.site.register(StudentModel)
-admin.site.register(SquadModel)
-admin.site.register(DepartamentModel)
+admin.site.register(Student)
+admin.site.register(StundetGroup)
+admin.site.register(Departament)
 admin.site.register(Teacher)
 admin.site.register(Discipline)
 admin.site.register(Mark)
-admin.site.register(SquadDiscipline)
+admin.site.register(GroupDiscipline)
