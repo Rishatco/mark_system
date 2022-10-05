@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'firstapp'
+    'ejournal'
 ]
 
 MIDDLEWARE = [
@@ -56,7 +56,7 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATE_DIR,os.path.join(BASE_DIR,"firstapp\\templates\\firstapp"),os.path.join(BASE_DIR,"firstapp\\templates\\firstapp\\registration")],
+        'DIRS': [TEMPLATE_DIR,os.path.join(BASE_DIR,"ejournal\\templates\\ejournal"),os.path.join(BASE_DIR,"ejournal\\templates\\ejournal\\registration")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

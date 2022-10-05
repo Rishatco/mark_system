@@ -15,7 +15,7 @@ class Student(models.Model):
     # patronymic - отчество
     patronymic = models.CharField(max_length=80, verbose_name='отчество')
     # group - учебная группа
-    squad = models.ForeignKey(to="StundetGroup", on_delete=models.CASCADE, verbose_name='учебная группа')
+    group = models.ForeignKey(to="StudentGroup", on_delete=models.CASCADE, verbose_name='учебная группа')
 
     class Meta:
         constraints = [
@@ -28,7 +28,7 @@ class Student(models.Model):
 
 
 # модель учебной группы
-class StundetGroup(models.Model):
+class StudentGroup(models.Model):
     # номер группы
     number = models.IntegerField(unique=True)
     # кафедра группы
@@ -43,28 +43,28 @@ class StundetGroup(models.Model):
         return str(self.number)
 
     def get_absolute_url(self):
-        return reverse('squad-detail', args=[str(self.id)])
+        return reverse('group-detail', args=[str(self.id)])
 
     def get_edit_url(self):
-        return reverse('squad-edit', args=[str(self.id)])
+        return reverse('group-edit', args=[str(self.id)])
 
     def get_del_url(self):
-        return reverse('squad-delete', args=[str(self.id)])
+        return reverse('group-delete', args=[str(self.id)])
 
     def get_rating_url(self):
         return reverse('rating', args=[str(self.id)])
 
     def get_study_rating_url(self):
-        return reverse('squad-study-rating', args=[str(self.id)])
+        return reverse('group-study-rating', args=[str(self.id)])
 
     def get_visiting_rating_url(self):
-        return reverse('squad-visiting-rating', args=[str(self.id)])
+        return reverse('group-visiting-rating', args=[str(self.id)])
 
     def get_add_res_rating_url(self):
-        return reverse('squad-add-res-rating', args=[str(self.id)])
+        return reverse('group-add-res-rating', args=[str(self.id)])
 
     def get_total_rating(self):
-        return reverse('squad-total-rating', args=[str(self.id)])
+        return reverse('group-total-rating', args=[str(self.id)])
 
 
 # модель кафедры
@@ -163,5 +163,5 @@ class Mark(models.Model):
 
 # модель дисциплины группы
 class GroupDiscipline(models.Model):
-    squad = models.ForeignKey(to="SquadModel", on_delete=models.CASCADE, verbose_name="Взвод")
+    group = models.ForeignKey(to="StudentGroup", on_delete=models.CASCADE, verbose_name="Взвод")
     discipline = models.ForeignKey(to="Discipline", on_delete=models.CASCADE, verbose_name="Дисциплина")

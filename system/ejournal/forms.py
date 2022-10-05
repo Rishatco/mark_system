@@ -7,5 +7,5 @@ class StudentForm(ModelForm):
 
     class Meta:
         model = Student
-        fields = ("name", "birthday", "surname", "squad", "patronymic")
+        fields = ("name", "surname",  "patronymic")
 

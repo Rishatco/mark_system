@@ -19,13 +19,13 @@ from django.urls import path, re_path
 from django.views.generic import TemplateView
 from django.conf.urls import include
 from django.contrib.auth import views
-from firstapp.views import SquadList, rating_log,squad_study_raiting,squad_visiting_raiting,squad_addres_raiting,squad_total_raiting,student_stat
-from firstapp.views import SquadDetailView, check_perm
-from firstapp.views import SquadUpdateView
-from firstapp.views import save_student,DisciplineDetailView
-from firstapp.views import SquadCreateView,TeacherDetailView
-from  firstapp.views import TeachersList, DisciplinesList, TeacherCreateView, TeacherEditView, TeacherDeleteView
-from firstapp.views import SquadDeleteView,DisciplineCreateView, DisciplineEditView, DisciplineDeleteView
+from ejournal.views import SquadList, rating_log,squad_study_raiting,squad_visiting_raiting,squad_addres_raiting,squad_total_raiting,student_stat
+from ejournal.views import SquadDetailView, check_perm
+from ejournal.views import SquadUpdateView
+from ejournal.views import save_student,DisciplineDetailView
+from ejournal.views import SquadCreateView,TeacherDetailView
+from  ejournal.views import TeachersList, DisciplinesList, TeacherCreateView, TeacherEditView, TeacherDeleteView
+from ejournal.views import SquadDeleteView,DisciplineCreateView, DisciplineEditView, DisciplineDeleteView
 
 urlpatterns = [
     path("admin/", admin.site.urls),

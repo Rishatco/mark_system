@@ -4,7 +4,7 @@ from django.template.response import TemplateResponse
 from django.urls import reverse_lazy
 from django.views import generic
 from .forms import StudentForm
-from .models import Student, StundetGroup, Teacher, Discipline, GroupDiscipline, Mark
+from .models import Student, StudentGroup, Teacher, Discipline, GroupDiscipline, Mark
 
 def check_perm(request):
     if request.user.is_superuser:
@@ -38,7 +38,7 @@ def student_stat(request):
 
 def squad_study_raiting(request, pk):
     if request.method == "GET":
-        squad = StundetGroup.objects.get(id=pk)
+        squad = StudentGroup.objects.get(id=pk)
         students = Student.objects.filter(squad=squad)
         discipline = Discipline.objects.get(name="дополнительные обязанности")
         squad_disciplines = GroupDiscipline.objects.filter(squad=squad)
@@ -60,11 +60,11 @@ def squad_study_raiting(request, pk):
         raiting_list = map(lambda x: [x[0], float('%.2f'%x[1])], raiting_list)
         titles = ["ФИО", "Средная оценка"]
         context = {"students": raiting_list, "squadmodel": squad, "titles": titles}
-        return  render(request, "firstapp/squad_raiting.html",context)
+        return  render(request, "ejournal/squad_raiting.html",context)
 
 def squad_visiting_raiting(request, pk):
     if request.method == "GET":
-        squad = StundetGroup.objects.get(id=pk)
+        squad = StudentGroup.objects.get(id=pk)
         students = Student.objects.filter(squad=squad)
         squad_disciplines = GroupDiscipline.objects.filter(squad=squad)
         raiting_list = []
@@ -81,11 +81,11 @@ def squad_visiting_raiting(request, pk):
         #raiting_list = map(lambda x: x[0], raiting_list)
         titles = ["ФИО", "Количество пропусков"]
         context = {"students": raiting_list, "squadmodel": squad, "titles": titles}
-        return  render(request, "firstapp/squad_raiting.html",context)
+        return  render(request, "ejournal/squad_raiting.html",context)
 
 def squad_addres_raiting(request, pk):
     if request.method == "GET":
-        squad = StundetGroup.objects.get(id=pk)
+        squad = StudentGroup.objects.get(id=pk)
         students = Student.objects.filter(squad=squad)
         discipline = Discipline.objects.get(name="дополнительные обязанности")
         squad_disciplines = GroupDiscipline.objects.filter(squad=squad, discipline=discipline)
@@ -104,7 +104,7 @@ def squad_addres_raiting(request, pk):
         #raiting_list = map(lambda x: x[0], raiting_list)
         titles = ["ФИО", "Дополнительная активность"]
         context = {"students": raiting_list, "squadmodel": squad, "titles": titles}
-        return  render(request, "firstapp/squad_raiting.html",context)
+        return  render(request, "ejournal/squad_raiting.html",context)
 
 class Student_Stat():
     def __init__(self):
@@ -115,7 +115,7 @@ class Student_Stat():
 
 def squad_total_raiting(request, pk):
     if request.method == "GET":
-        squad = StundetGroup.objects.get(id=pk)
+        squad = StudentGroup.objects.get(id=pk)
         students = Student.objects.filter(squad=squad)
         discipline = Discipline.objects.get(name="дополнительные обязанности")
         squad_disciplines = GroupDiscipline.objects.filter(squad=squad)
@@ -163,7 +163,7 @@ def squad_total_raiting(request, pk):
         raiting.reverse()
         titles = ["ФИО", "Баллы за учебу", "Баллы за доп активность","Баллы за посещение", "Суммарный балл"]
         context = {"students": raiting, "squadmodel": squad, "titles": titles}
-        return  render(request, "firstapp/squad_raiting.html",context)
+        return  render(request, "ejournal/squad_raiting.html",context)
 
 
 
@@ -171,12 +171,12 @@ def rating_log(request, pk):
     if request.method == "GET":
         curDis = request.GET.get("choose_discipline")
         if curDis == None:
-            squad = StundetGroup.objects.get(id=pk)
+            squad = StudentGroup.objects.get(id=pk)
             context = {"squad": squad}
-            return render(request, "firstapp/raiting_log.html", context)
+            return render(request, "ejournal/raiting_log.html", context)
         else:
             discipline = Discipline.objects.get(name=curDis)
-            squad = StundetGroup.objects.get(id=pk)
+            squad = StudentGroup.objects.get(id=pk)
             squadDiscipline = GroupDiscipline.objects.get(discipline=discipline, squad=squad)
             students = Student.objects.filter(squad=squad)
             curMarks = Mark.objects.filter(discipline=squadDiscipline)
@@ -197,12 +197,12 @@ def rating_log(request, pk):
                         marks[-1]["marks"].append(0)
             context = {"squad": squad, "students": students, "marks": curMarks, "dates": strDate, "stmarks": marks, "cur_discipline": discipline}
 
-            return render(request, "firstapp/raiting_log.html", context)
+            return render(request, "ejournal/raiting_log.html", context)
     else:
         curDis = request.GET.get("choose_discipline")
         dates = request.POST.getlist("data")
         ocenkas = request.POST.getlist('ocenka')
-        squad = StundetGroup.objects.get(id=pk)
+        squad = StudentGroup.objects.get(id=pk)
         discipline = Discipline.objects.get(name=curDis)
         squadDiscipline = GroupDiscipline.objects.get(discipline=discipline, squad=squad)
         students =list(Student.objects.filter(squad=squad))
@@ -253,13 +253,13 @@ def save_student(request, id):
 def squad_update_view(request, id):
     if request.method=="GET":
      try :
-        data = StundetGroup.object.get(id=id)
-     except StundetGroup.DoesNotExist:
+        data = StudentGroup.object.get(id=id)
+     except StudentGroup.DoesNotExist:
         raise Http404('такого взвода не сущетвует')
         return render(request, 'squadmodel_form.html', {})
 
 class SquadList(generic.ListView):
-    model = StundetGroup
+    model = StudentGroup
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -274,10 +274,10 @@ class SquadList(generic.ListView):
 
 
 class SquadDetailView(generic.DetailView):
-    model = StundetGroup
+    model = StudentGroup
 
 class SquadUpdateView(generic.UpdateView):
-    model = StundetGroup
+    model = StudentGroup
     fields = ["number", "departament", "specialization"]
 
 
@@ -302,7 +302,7 @@ class SquadUpdateView(generic.UpdateView):
         surname =request.POST.getlist('surname')
         patronymic = request.POST.getlist("patronymic")
         # получение текущего взвода
-        squad = StundetGroup.objects.get(id=kwargs['pk'])
+        squad = StudentGroup.objects.get(id=kwargs['pk'])
         # получение id существующих студентов, так как клиент для новых студентов возвращает пустую строку как id
         id_upd = list(filter(lambda x: x!='',id))
         students =Student.objects.filter(squad=squad)
@@ -369,7 +369,7 @@ class SquadUpdateView(generic.UpdateView):
 class SquadCreateView(generic.CreateView):
     template_name = "squadmodel_create.html"
     fields = ["number", "departament", "specialization"]
-    model = StundetGroup
+    model = StudentGroup
 
     def post(self, request, *args, **kwargs):
         squad = super().post(request, *args, **kwargs)
@@ -377,11 +377,11 @@ class SquadCreateView(generic.CreateView):
         return squad
 
 class SquadDeleteView(generic.DeleteView):
-    model = StundetGroup
+    model = StudentGroup
 
     success_url = reverse_lazy('squads')
     def post(self, request, *args, **kwargs):
-        squad = StundetGroup.objects.get(id=kwargs['pk'])
+        squad = StudentGroup.objects.get(id=kwargs['pk'])
         students = Student.objects.filter(squad=squad)
         students.delete()
         return self.delete(request, *args, **kwargs)
