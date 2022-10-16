@@ -22,6 +22,7 @@ class Student(models.Model):
             models.UniqueConstraint(fields=['name', 'surname', 'patronymic'], name='unique fio student')
         ]
         ordering = ["surname", "name", "patronymic"]
+        db_table = "student"
 
     def __str__(self):
         return self.surname + ' ' + self.name + ' ' + self.patronymic
@@ -31,13 +32,12 @@ class Student(models.Model):
 class StudentGroup(models.Model):
     # номер группы
     number = models.IntegerField(unique=True)
-    # кафедра группы
-    departament = models.ForeignKey(to="Departament", on_delete=models.CASCADE)
     # специлизация
     specialization = models.CharField(max_length=200)
 
     class Meta:
         ordering = ['number']
+        db_table = "studentGroup"
 
     def __str__(self):
         return str(self.number)
@@ -67,19 +67,6 @@ class StudentGroup(models.Model):
         return reverse('group-total-rating', args=[str(self.id)])
 
 
-# модель кафедры
-class Departament(models.Model):
-    # полное имя кафедры
-    full_name = models.CharField(max_length=300, unique=True)
-    # аббревиатура кафедры
-    short_name = models.CharField(max_length=10)
-
-    def __str__(self):
-        return self.short_name
-
-    class Meta:
-        ordering = ["full_name"]
-
 
 # модель преподавателя
 class Teacher(models.Model):
@@ -89,17 +76,16 @@ class Teacher(models.Model):
     surname = models.CharField(max_length=30, verbose_name="Фамилия")
     # отчество
     patronymic = models.CharField(max_length=30, verbose_name="Отчество")
-    # кафедра
-    departament = models.ForeignKey(to="Departament", on_delete=models.CASCADE, verbose_name="Кафедра")
 
     def __str__(self):
-        return self.rank + ' ' + self.surname
+        return self.surname+" "+self.name
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['name', 'surname', 'patronymic'], name='unique fio teacher')
         ]
         ordering = ["surname", "name", "patronymic"]
+        db_table = "teacher"
 
     def get_absolute_url(self):
         return reverse('teacher-detail', args=[str(self.id)])
@@ -122,8 +108,6 @@ class Discipline(models.Model):
 
     name = models.CharField(max_length=400, verbose_name="Название", unique=True)
     short_name = models.CharField(max_length=10, verbose_name="Аббревиатура", blank=True)
-    departament = models.ForeignKey(to="Departament", on_delete=models.CASCADE, verbose_name="Кафедра", blank=True,
-                                    null=True)
     teacher = models.ForeignKey(to="Teacher", on_delete=models.CASCADE, verbose_name="Преподаватель", blank=True,
                                 null=True)
     course = models.IntegerField(verbose_name="Курс", blank=True, null=True)
@@ -136,6 +120,7 @@ class Discipline(models.Model):
             models.UniqueConstraint(fields=['name'], name='unique name discipline')
         ]
         ordering = ["name"]
+        db_table = "discipline"
 
     def get_absolute_url(self):
         return reverse('discipline-detail', args=[str(self.id)])
@@ -159,9 +144,13 @@ class Mark(models.Model):
 
     class Meta:
         ordering = ["date", "student"]
+        db_table = "mark"
 
 
 # модель дисциплины группы
 class GroupDiscipline(models.Model):
     group = models.ForeignKey(to="StudentGroup", on_delete=models.CASCADE, verbose_name="Взвод")
     discipline = models.ForeignKey(to="Discipline", on_delete=models.CASCADE, verbose_name="Дисциплина")
+
+    class Meta:
+        db_table = "groupDiscipline"
