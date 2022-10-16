@@ -6,8 +6,6 @@ from django.urls import reverse
 
 # модель Студент
 class Student(models.Model):
-    # user - пользоватаель, к которому прикреплен студент
-    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     # surname - фамилия
     surname = models.CharField(max_length=80, verbose_name="фамилия")
     # name - имя
